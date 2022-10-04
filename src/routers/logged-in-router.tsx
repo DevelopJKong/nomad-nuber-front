@@ -1,54 +1,24 @@
-import React from "react";
-import { useForm } from "react-hook-form";
-
-interface IForm {
-  email: string;
-  password: string;
-}
-
-const LoggedInRouter = () => {
-  const {
-    register,
-    watch,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IForm>();
-  const onSubmit = () => {
-    console.log(watch());
-  };
-  const onInvalid = () => {
-    console.log("you can't make the account");
-  };
+const Login = () => {
   return (
-    <div>
-      <h1>Logged out</h1>
-      <form onSubmit={handleSubmit(onSubmit, onInvalid)}>
-        <div>
+    <div className='h-screen flex items-center justify-center bg-gray-800'>
+      <div className='bg-white w-full max-w-lg py-10 rounded-lg text-center'>
+        <h3 className='text-2xl text-gray-800'>Log In</h3>
+        <form className='flex flex-col mt-5 px-5'>
           <input
-            type="email"
-            placeholder="email"
-            {...register("email", {
-              required: true,
-              // validate: (email:string) => email.includes("@gmail.com"),
-              pattern: /^[A-Za-z0-9._%+-]+@gmail.com/,
-            })}
+            placeholder='Email'
+            className=' bg-gray-100 shadow-inner   border-2 focus:border-opacity-60 focus:border-green-600 focus:outline-none mb-3 py-3 px-5 rounded-lg'
           />
-        </div>
-        <div>{errors.email?.message}</div>
-        <div>
           <input
-            type="password"
-            placeholder="password"
-            {...register("password", {
-              required: true,
-            })}
+            placeholder='Password'
+            className=' bg-gray-100 shadow-inner focus:outline-none border-2 focus:border-opacity-60 focus:border-green-600  py-3 px-5 rounded-lg'
           />
-        </div>
-        <div>{errors.password?.message}</div>
-      </form>
-      <button className={"bg-yellow-300 text-white"}>Submit</button>
+          <button className='py-3 px-5 bg-gray-800 text-white mt-3 text-lg rounded-lg focus:outline-none hover:opacity-90'>
+            Log In
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
 
-export default LoggedInRouter;
+export default Login;
