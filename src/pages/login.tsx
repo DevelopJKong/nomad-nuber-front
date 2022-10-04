@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
+import { FormError } from '../components/form-error';
+import { gql, useMutation } from '@apollo/client';
 
 // !  https://velog.io/@jinsunkimdev/%EB%A6%AC%EC%95%A1%ED%8A%B8%EC%97%90%EC%84%9C-tailwindcss-styled-components-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0
 // !  https://itchallenger.tistory.com/569 ⭐⭐⭐⭐⭐⭐⭐⭐
@@ -31,8 +33,18 @@ const Button = styled.button`
   ${tw`py-3 px-5 bg-gray-800 text-white mt-3 text-lg rounded-lg focus:outline-none hover:opacity-90`}
 `;
 
-const Error = styled.div`
-  ${tw`font-medium text-red-500`}
+// const Error = styled.div`
+//   ${tw`font-medium text-red-500`}
+// `;
+
+const LOGIN_MUTATION = gql`
+  mutation PotatoMutation($email: String!, $passwrod: String!) {
+    login(input: { email: $email, password: $password }) {
+      ok
+      token
+      error
+    }
+  }
 `;
 
 interface ILoginForm {
@@ -47,8 +59,15 @@ const Login = () => {
     formState: { errors },
   } = useForm<ILoginForm>();
 
+  const [loginMutation, { loading, error, data }] = useMutation(LOGIN_MUTATION);
+
   const onValid = (data: ILoginForm) => {
-    console.log(data);
+    const { email, password } = data;
+    loginMutation({
+      variables: {
+        email,password
+      }
+    })
   };
 
   return (
@@ -66,7 +85,7 @@ const Login = () => {
               },
             })}
           />
-          {errors.email?.message && <Error>{errors.email?.message}</Error>}
+          {errors.email?.message && <FormError errorMessage={errors.email?.message} />}
           <Input
             placeholder='Password'
             type='password'
@@ -78,8 +97,10 @@ const Login = () => {
               minLength: 10,
             })}
           />
-          {errors.password?.message && <Error>{errors.password?.message}</Error>}
-          {errors.password?.type === 'minLength' && <Error>{errors.password?.message}</Error>}
+          {errors.password?.message && <FormError errorMessage={errors.password?.message} />}
+          {errors.password?.type === 'minLength' && (
+            <FormError errorMessage={'Password must be more than 10 chars'} />
+          )}
           <Button>Log In</Button>
         </Form>
       </Content>
