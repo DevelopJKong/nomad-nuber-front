@@ -4,6 +4,8 @@ import { useForm } from 'react-hook-form';
 import { FormError } from '../components/form-error';
 import { gql, useMutation } from '@apollo/client';
 import { loginMutation, loginMutationVariables } from '../__generated__/loginMutation';
+import { Button } from '../components/button';
+import { Link } from 'react-router-dom';
 
 // !  https://velog.io/@jinsunkimdev/%EB%A6%AC%EC%95%A1%ED%8A%B8%EC%97%90%EC%84%9C-tailwindcss-styled-components-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0
 // !  https://itchallenger.tistory.com/569 ⭐⭐⭐⭐⭐⭐⭐⭐
@@ -11,27 +13,35 @@ import { loginMutation, loginMutationVariables } from '../__generated__/loginMut
 // !  https://eslint.org/docs/latest/rules/quotes
 
 const Container = styled.div`
-  ${tw`h-screen flex items-center justify-center bg-gray-800`}
+  ${tw`h-screen flex items-center flex-col mt-10 lg:mt-28`}
 `;
 
 const Content = styled.div`
-  ${tw`bg-white w-full max-w-lg pt-8 pb-7  rounded-lg text-center`}
+  ${tw`bg-white w-full max-w-lg pt-8 pb-7 rounded-lg text-center`}
 `;
 
-const Title = styled.h3`
-  ${tw`text-2xl text-gray-800`}
+const Screen = styled.div`
+  ${tw`w-full max-w-screen-md flex flex-col px-5 items-center`}
+`;
+
+const Title = styled.h4`
+  ${tw`w-full font-medium text-left text-2xl mb-5 mt-5`}
+`;
+
+const Img = styled.img`
+  ${tw`w-52 mb-1`}
 `;
 
 const Form = styled.form`
-  ${tw`grid gap-3 mt-5 px-5`}
+  ${tw`grid gap-3 mt-5 w-full mb-5`}
 `;
 
 const Input = styled.input`
-  ${tw`bg-gray-100 shadow-inner focus:ring-2 focus:ring-green-600 focus:ring-opacity-90 focus:outline-none mb-3 py-3 px-5 rounded-lg`}
+  ${tw`focus:outline-none focus:border-gray-500 p-3 border-2 text-lg border-gray-200 transition-colors`}
 `;
 
-const Button = styled.button`
-  ${tw`py-3 px-5 bg-gray-800 text-white mt-3 text-lg rounded-lg focus:outline-none hover:opacity-90`}
+const RegisterLink = styled(Link)`
+  ${tw`text-lime-600 hover:underline`}
 `;
 
 // const Error = styled.div`
@@ -57,8 +67,11 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<ILoginForm>();
+    clearErrors,
+    formState: { errors, isValid },
+  } = useForm<ILoginForm>({
+    mode: 'onChange',
+  });
 
   const onCompleted = (data: loginMutation) => {
     const {
@@ -71,7 +84,7 @@ const Login = () => {
     }
   };
 
-  const [loginMutation, { data: loginMutationResult }] = useMutation<
+  const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
     loginMutation,
     loginMutationVariables
   >(LOGIN_MUTATION, {
@@ -79,53 +92,61 @@ const Login = () => {
   });
 
   const onValid = (data: ILoginForm) => {
-    const { email, password } = data;
-    loginMutation({
-      variables: {
-        loginInput: {
-          email,
-          password,
+    if (!loading) {
+      const { email, password } = data;
+      loginMutation({
+        variables: {
+          loginInput: {
+            email,
+            password,
+          },
         },
-      },
-    });
+      });
+    }
   };
 
   return (
     <Container>
       <Content>
-        <Title>Log In</Title>
-        <Form onSubmit={handleSubmit(onValid)}>
-          <Input
-            placeholder='Email'
-            type='email'
-            {...register('email', {
-              required: {
-                value: true,
-                message: 'Email is required',
-              },
-            })}
-          />
-          {errors.email?.message && <FormError errorMessage={errors.email?.message} />}
-          <Input
-            placeholder='Password'
-            type='password'
-            {...register('password', {
-              required: {
-                value: true,
-                message: 'Password is required',
-              },
-              minLength: 10,
-            })}
-          />
-          {errors.password?.message && <FormError errorMessage={errors.password?.message} />}
-          {errors.password?.type === 'minLength' && (
-            <FormError errorMessage={'Password must be more than 10 chars'} />
-          )}
-          <Button>Log In</Button>
-          {loginMutationResult?.login.error && (
-            <FormError errorMessage={loginMutationResult.login.error} />
-          )}
-        </Form>
+        <Screen>
+          <Img src='https://www.ubereats.com/_static/8b969d35d373b512664b78f912f19abc.svg' />
+          <Title>Welcome back</Title>
+          <Form onSubmit={handleSubmit(onValid)} onClick={() => clearErrors()}>
+            <Input
+              placeholder='Email'
+              type='email'
+              {...register('email', {
+                required: {
+                  value: true,
+                  message: 'Email is required',
+                },
+              })}
+            />
+            {errors.email?.message && <FormError errorMessage={errors.email?.message} />}
+            <Input
+              placeholder='Password'
+              type='password'
+              {...register('password', {
+                required: {
+                  value: true,
+                  message: 'Password is required',
+                },
+                minLength: 10,
+              })}
+            />
+            {errors.password?.message && <FormError errorMessage={errors.password?.message} />}
+            {errors.password?.type === 'minLength' && (
+              <FormError errorMessage={'Password must be more than 10 chars'} />
+            )}
+            <Button canClick={isValid} loading={loading} actionText={'Log in'} />
+            {loginMutationResult?.login.error && (
+              <FormError errorMessage={loginMutationResult.login.error} />
+            )}
+          </Form>
+        </Screen>
+        <div>
+          New to Nuber? <RegisterLink to='/create-account'>Create an Account</RegisterLink>
+        </div>
       </Content>
     </Container>
   );
