@@ -39,8 +39,8 @@ const Button = styled.button`
 // `;
 
 const LOGIN_MUTATION = gql`
-  mutation loginMutation($email: String!, $password: String!) {
-    login(input: { email: $email, password: $password }) {
+  mutation loginMutation($loginInput: LoginInput!) {
+    login(input: $loginInput) {
       ok
       token
       error
@@ -57,21 +57,24 @@ const Login = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm<ILoginForm>();
 
   const [loginMutation, { data }] = useMutation<loginMutation, loginMutationVariables>(
     LOGIN_MUTATION,
+    {
+      variables: {
+        loginInput: {
+          email: watch('email'),
+          password: watch('password'),
+        },
+      },
+    },
   );
 
-  const onValid = (data: ILoginForm) => {
-    const { email, password } = data;
-    loginMutation({
-      variables: {
-        email,
-        password,
-      },
-    });
+  const onValid = () => {
+    loginMutation();
   };
 
   return (
