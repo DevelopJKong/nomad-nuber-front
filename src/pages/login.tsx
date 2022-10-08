@@ -57,24 +57,37 @@ const Login = () => {
   const {
     register,
     handleSubmit,
-    watch,
     formState: { errors },
   } = useForm<ILoginForm>();
 
-  const [loginMutation, { data }] = useMutation<loginMutation, loginMutationVariables>(
-    LOGIN_MUTATION,
-    {
+  const onCompleted = (data: loginMutation) => {
+    const {
+      login: { error, ok, token },
+    } = data;
+    if (ok) {
+      console.log(token);
+    } else {
+      console.log(error);
+    }
+  };
+
+  const [loginMutation, { data: loginMutationResult }] = useMutation<
+    loginMutation,
+    loginMutationVariables
+  >(LOGIN_MUTATION, {
+    onCompleted,
+  });
+
+  const onValid = (data: ILoginForm) => {
+    const { email, password } = data;
+    loginMutation({
       variables: {
         loginInput: {
-          email: watch('email'),
-          password: watch('password'),
+          email,
+          password,
         },
       },
-    },
-  );
-
-  const onValid = () => {
-    loginMutation();
+    });
   };
 
   return (
@@ -109,6 +122,9 @@ const Login = () => {
             <FormError errorMessage={'Password must be more than 10 chars'} />
           )}
           <Button>Log In</Button>
+          {loginMutationResult?.login.error && (
+            <FormError errorMessage={loginMutationResult.login.error} />
+          )}
         </Form>
       </Content>
     </Container>
