@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@apollo/client": "^3.6.9",
+    "@apollo/client": "^3.7.0",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -15,7 +15,7 @@
     "apollo": "^2.34.0",
     "autoprefixer": "^10.4.12",
     "babel-plugin-macros": "^3.1.0",
-    "graphql": "^16.6.0",
+    "graphql": "^15.8.0",
     "postcss": "^8.4.16",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -28,8 +28,26 @@
     "typescript": "^4.8.3",
     "web-vitals": "^2.1.4"
   },
+  "overrides": {
+    "@apollo/client": {
+      "react": "$react"
+    },
+    "@apollographql/graphql-language-service-interface": {
+      "graphql": "$graphql"
+    },
+    "@apollographql/graphql-language-service-parser": {
+      "graphql": "$graphql"
+    },
+    "@apollographql/graphql-language-service-types": {
+      "graphql": "$graphql"
+    },
+    "@apollographql/graphql-language-service-utils": {
+      "graphql": "$graphql"
+    }
+  },
   "scripts": {
     "tailwind:build": "npx tailwindcss -i ./src/styles/tailwind.css -o ./src/styles/styles.css",
+    "apollo:codegen": "npx apollo client:codegen src/__generated__ --target=typescript --outputFlat",
     "start": "npm run tailwind:build & react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",

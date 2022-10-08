@@ -16,7 +16,12 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "ignorePatterns": ["postcss.config.js", "tailwind.config.js", "babel.config.js"],
+  "ignorePatterns": [
+    "postcss.config.js",
+    "tailwind.config.js",
+    "babel.config.js",
+    "apollo.config.js"
+  ],
   "plugins": ["react", "react-hooks", "@typescript-eslint", "prettier"],
   "rules": {
     "no-empty-function": "warn", // 중괄호가 빈 함수 허용

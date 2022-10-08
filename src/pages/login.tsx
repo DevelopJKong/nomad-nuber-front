@@ -3,6 +3,7 @@ import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
 import { FormError } from '../components/form-error';
 import { gql, useMutation } from '@apollo/client';
+import { loginMutation, loginMutationVariables } from '../__generated__/loginMutation';
 
 // !  https://velog.io/@jinsunkimdev/%EB%A6%AC%EC%95%A1%ED%8A%B8%EC%97%90%EC%84%9C-tailwindcss-styled-components-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0
 // !  https://itchallenger.tistory.com/569 ⭐⭐⭐⭐⭐⭐⭐⭐
@@ -38,7 +39,7 @@ const Button = styled.button`
 // `;
 
 const LOGIN_MUTATION = gql`
-  mutation PotatoMutation($email: String!, $passwrod: String!) {
+  mutation loginMutation($email: String!, $password: String!) {
     login(input: { email: $email, password: $password }) {
       ok
       token
@@ -48,8 +49,8 @@ const LOGIN_MUTATION = gql`
 `;
 
 interface ILoginForm {
-  email?: string;
-  password?: string;
+  email: string;
+  password: string;
 }
 
 const Login = () => {
@@ -59,15 +60,18 @@ const Login = () => {
     formState: { errors },
   } = useForm<ILoginForm>();
 
-  const [loginMutation, { loading, error, data }] = useMutation(LOGIN_MUTATION);
+  const [loginMutation, { data }] = useMutation<loginMutation, loginMutationVariables>(
+    LOGIN_MUTATION,
+  );
 
   const onValid = (data: ILoginForm) => {
     const { email, password } = data;
     loginMutation({
       variables: {
-        email,password
-      }
-    })
+        email,
+        password,
+      },
+    });
   };
 
   return (
