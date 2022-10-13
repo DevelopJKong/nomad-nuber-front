@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import { useForm } from 'react-hook-form';
+import Helmet from 'react-helmet';
 import { FormError } from '../components/form-error';
 import { gql, useMutation } from '@apollo/client';
 import { loginMutation, loginMutationVariables } from '../__generated__/loginMutation';
@@ -107,6 +108,9 @@ const Login = () => {
 
   return (
     <Container>
+      <Helmet>
+        <title>Login | Nuber Eats</title>
+      </Helmet>
       <Content>
         <Screen>
           <Img src='https://www.ubereats.com/_static/8b969d35d373b512664b78f912f19abc.svg' />
