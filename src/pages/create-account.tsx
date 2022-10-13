@@ -82,11 +82,12 @@ const CreactAccount = () => {
   const history = useHistory();
   const onCompleted = (data: createAccountMutation) => {
     const {
-      createAccount: { ok},
+      createAccount: { ok },
     } = data;
 
     if (ok) {
       // redirect
+      alert('Account Created Log in now!');
       history.push('/login');
     }
   };
