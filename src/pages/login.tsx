@@ -7,6 +7,7 @@ import { gql, useMutation } from '@apollo/client';
 import { loginMutation, loginMutationVariables } from '../__generated__/loginMutation';
 import { Button } from '../components/button';
 import { Link } from 'react-router-dom';
+import { isLoggedInVar } from '../apollo';
 
 // !  https://velog.io/@jinsunkimdev/%EB%A6%AC%EC%95%A1%ED%8A%B8%EC%97%90%EC%84%9C-tailwindcss-styled-components-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0
 // !  https://itchallenger.tistory.com/569 ⭐⭐⭐⭐⭐⭐⭐⭐
@@ -80,6 +81,7 @@ const Login = () => {
     } = data;
     if (ok) {
       console.log(token);
+      isLoggedInVar(true);
     } else {
       console.log(error);
     }
@@ -124,6 +126,8 @@ const Login = () => {
                   value: true,
                   message: 'Email is required',
                 },
+                pattern:
+                  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
               })}
             />
             {errors.email?.message && <FormError errorMessage={errors.email?.message} />}

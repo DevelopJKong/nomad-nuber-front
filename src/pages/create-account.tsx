@@ -5,8 +5,12 @@ import Helmet from 'react-helmet';
 import { FormError } from '../components/form-error';
 import { gql, useMutation } from '@apollo/client';
 import { Button } from '../components/button';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { UserRole } from '../__generated__/globalTypes';
+import {
+  createAccountMutation,
+  createAccountMutationVariables,
+} from '../__generated__/createAccountMutation';
 
 const Container = styled.div`
   ${tw`h-screen flex items-center flex-col mt-10 lg:mt-28`}
@@ -48,9 +52,9 @@ const SelectBox = styled.select`
 //   ${tw`font-medium text-red-500`}
 // `;
 
-const CREACT_ACCOUNT_MUTATION = gql`
-  mutation createAccountMutation($createAcccountInput: CreateAccountInput!) {
-    createAccount(input: $createAcccountInput) {
+const CREATE_ACCOUNT_MUTATION = gql`
+  mutation createAccountMutation($createAccountInput: CreateAccountInput!) {
+    createAccount(input: $createAccountInput) {
       ok
       error
     }
@@ -75,9 +79,38 @@ const CreactAccount = () => {
       role: UserRole.Client,
     },
   });
+  const history = useHistory();
+  const onCompleted = (data: createAccountMutation) => {
+    const {
+      createAccount: { ok},
+    } = data;
 
-  const [createAccountMutation] = useMutation(CREACT_ACCOUNT_MUTATION);
-  const onValid = () => {};
+    if (ok) {
+      // redirect
+      history.push('/login');
+    }
+  };
+
+  const [createAccountMutation, { data: createAccountMutationResult, loading }] = useMutation<
+    createAccountMutation,
+    createAccountMutationVariables
+  >(CREATE_ACCOUNT_MUTATION, {
+    onCompleted,
+  });
+  const onValid = (data: ICreateAccountForm) => {
+    const { email, password, role } = data;
+    if (!loading) {
+      createAccountMutation({
+        variables: {
+          createAccountInput: {
+            email,
+            password,
+            role,
+          },
+        },
+      });
+    }
+  };
 
   return (
     <Container>
@@ -97,6 +130,8 @@ const CreactAccount = () => {
                   value: true,
                   message: 'Email is required',
                 },
+                pattern:
+                  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
               })}
             />
             {errors.email?.message && <FormError errorMessage={errors.email?.message} />}
@@ -125,6 +160,9 @@ const CreactAccount = () => {
               ))}
             </SelectBox>
             <Button canClick={isValid} loading={false} actionText={'Create Account'} />
+            {createAccountMutationResult?.createAccount.error && (
+              <FormError errorMessage={createAccountMutationResult?.createAccount.error} />
+            )}
           </Form>
         </Screen>
         <div>
