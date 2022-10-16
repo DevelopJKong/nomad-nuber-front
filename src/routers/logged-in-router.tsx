@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-d
 import { meQuery } from '../__generated__/meQuery';
 import Restaurants from '../pages/restaurant/restaurants';
 import NotFound from '../pages/404';
+import Header from '../components/header';
 
 const Loading = styled.div`
   ${tw`h-screen flex justify-center items-center`}
@@ -44,6 +45,7 @@ const Login = () => {
   return (
     <Router>
       <Switch>
+        <Header />
         {data.me.role === 'Client' && <ClientRouter />}
         <Route>
           <NotFound />
