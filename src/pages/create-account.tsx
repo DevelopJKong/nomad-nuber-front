@@ -40,7 +40,7 @@ const Input = styled.input`
   ${tw`focus:outline-none focus:border-gray-500 p-3 border-2 text-lg border-gray-200 transition-colors`}
 `;
 
-const RegisterLink = styled(Link)`
+const LoginLink = styled(Link)`
   ${tw`text-lime-600 hover:underline`}
 `;
 
@@ -88,7 +88,7 @@ const CreactAccount = () => {
     if (ok) {
       // redirect
       alert('Account Created Log in now!');
-      history.push('/login');
+      history.push('/');
     }
   };
 
@@ -167,7 +167,7 @@ const CreactAccount = () => {
           </Form>
         </Screen>
         <div>
-          New to Nuber? <RegisterLink to='/create-account'>Create an Account</RegisterLink>
+          Log in now <LoginLink to='/'>Create an Account</LoginLink>
         </div>
       </Content>
     </Container>

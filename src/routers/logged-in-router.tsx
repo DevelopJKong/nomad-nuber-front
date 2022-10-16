@@ -2,7 +2,10 @@ import { gql, useQuery } from '@apollo/client';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import { isLoggedInVar } from '../apollo';
+import { BrowserRouter as Router, Redirect, Route, Switch } from 'react-router-dom';
 import { meQuery } from '../__generated__/meQuery';
+import Restaurants from '../pages/restaurant/restaurants';
+import NotFound from '../pages/404';
 
 const Loading = styled.div`
   ${tw`h-screen flex justify-center items-center`}
@@ -11,6 +14,12 @@ const Loading = styled.div`
 const LoadingText = styled.span`
   ${tw`font-medium text-xl tracking-wide`}
 `;
+
+const ClientRouter = () => (
+  <Route path='/' exact>
+    <Restaurants />
+  </Route>
+);
 
 const ME_QUERY = gql`
   query meQuery {
@@ -25,7 +34,6 @@ const ME_QUERY = gql`
 
 const Login = () => {
   const { data, loading, error } = useQuery<meQuery>(ME_QUERY);
-  console.log(data, error);
   if (!data || loading || error) {
     return (
       <Loading>
@@ -34,9 +42,14 @@ const Login = () => {
     );
   }
   return (
-    <div>
-      <h1>{data.me.role}</h1>
-    </div>
+    <Router>
+      <Switch>
+        {data.me.role === 'Client' && <ClientRouter />}
+        <Route>
+          <NotFound />
+        </Route>
+      </Switch>
+    </Router>
   );
 };
 
