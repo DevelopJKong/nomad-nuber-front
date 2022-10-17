@@ -1,6 +1,11 @@
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import tw from 'twin.macro';
+import { LOGO } from '../constants';
+import { useMe } from '../hooks/useMe';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
 const Container = styled.header`
   ${tw`py-4`}
 `;
@@ -17,16 +22,20 @@ const Text = styled.span`
   ${tw`text-xs`}
 `;
 
-const Header = () => {
+const Person = styled(FontAwesomeIcon)`
+  ${tw`text-xl`}
+`;
+
+const Header: React.FC = () => {
+  const { data } = useMe();
   return (
     <Container>
       <Content>
-        <Img
-          src='https://www.ubereats.com/_static/8b969d35d373b512664b78f912f19abc.svg'
-          alt='Nuber Eats'
-        />
+        <Img src={LOGO} alt='Nuber Eats' />
         <Text>
-          <Link to='/my-profile'>Profile</Link>
+          <Link to='/my-profile'>
+            <Person icon={faUser} />
+          </Link>
         </Text>
       </Content>
     </Container>

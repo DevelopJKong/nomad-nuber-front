@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Restaurants = () => {
-  return <div>restaurantasdasdas</div>;
+  return <div>restaurant</div>;
 };
 
 export default Restaurants;
