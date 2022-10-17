@@ -15,19 +15,15 @@ const LoadingText = styled.span`
   ${tw`font-medium text-xl tracking-wide`}
 `;
 
-const ClientRouter = () => (
-  <>
-    <Route path='/' exact>
-      <Restaurants />
-    </Route>
-    <Route path='/confirm' exact>
-      <ConfirmEmail />
-    </Route>
-    <Route>
-      <NotFound />
-    </Route>
-  </>
-);
+// TODO 어떻게 이런식으로 사용할수있는건지 알아두어야 할거 같다
+const ClientRouter = [
+  <Route key={1} path='/' exact>
+    <Restaurants />
+  </Route>,
+  <Route key={2} path='/confirm' exact>
+    <ConfirmEmail />
+  </Route>,
+];
 
 const Login = () => {
   const { data, loading, error } = useMe();
@@ -42,8 +38,8 @@ const Login = () => {
     <Router>
       <Header />
       <Switch>
-        {data.me.role === "Client" && <ClientRouter />}
-        <Route>
+        {data.me.role === "Client" && ClientRouter}
+        <Route path='*'>
           <NotFound />
         </Route>
       </Switch>

@@ -1,7 +1,8 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql, useApolloClient, useMutation } from "@apollo/client";
 import { useEffect } from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
+import { useMe } from "../../hooks/useMe";
 import { verifyEmail, verifyEmailVariables } from "../../__generated__/verifyEmail";
 
 const Container = styled.div`
@@ -26,8 +27,30 @@ const VERIFY_EMAIL_MUTATION = gql`
 `;
 
 const ConfirmEmail = () => {
+  const { data: userData } = useMe();
+  const client = useApolloClient();
+  const onCompleted = (data: verifyEmail) => {
+    const {
+      verifyEmail: { ok },
+    } = data;
+    if (ok && userData?.me.id) {
+      client.writeFragment({
+        id: `User:${userData?.me.id}`,
+        fragment: gql`
+          fragment VerifiedUser on User {
+            verified
+          }
+        `,
+        data: {
+          verified: true,
+        },
+      });
+    }
+  };
+
   const [verifyEmail, { loading: verifyingEmail }] = useMutation<verifyEmail, verifyEmailVariables>(
     VERIFY_EMAIL_MUTATION,
+    { onCompleted },
   );
 
   useEffect(() => {
