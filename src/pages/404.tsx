@@ -1,7 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import styled from 'styled-components';
-import tw from 'twin.macro';
+import React from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import tw from "twin.macro";
 const Container = styled.div`
   ${tw`h-screen flex flex-col items-center justify-center`}
 `;

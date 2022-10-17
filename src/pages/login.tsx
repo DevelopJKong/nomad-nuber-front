@@ -1,14 +1,14 @@
-import styled from 'styled-components';
-import tw from 'twin.macro';
-import { useForm } from 'react-hook-form';
-import Helmet from 'react-helmet';
-import { FormError } from '../components/form-error';
-import { gql, useMutation } from '@apollo/client';
-import { loginMutation, loginMutationVariables } from '../__generated__/loginMutation';
-import { Button } from '../components/button';
-import { Link } from 'react-router-dom';
-import { authTokenVar, isLoggedInVar } from '../apollo';
-import { LOCALSTORAGE_TOKEN, LOGO } from '../constants';
+import styled from "styled-components";
+import tw from "twin.macro";
+import { useForm } from "react-hook-form";
+import Helmet from "react-helmet";
+import { FormError } from "../components/form-error";
+import { gql, useMutation } from "@apollo/client";
+import { loginMutation, loginMutationVariables } from "../__generated__/loginMutation";
+import { Button } from "../components/button";
+import { Link } from "react-router-dom";
+import { authTokenVar, isLoggedInVar } from "../apollo";
+import { LOCALSTORAGE_TOKEN, LOGO } from "../constants";
 
 // !  https://velog.io/@jinsunkimdev/%EB%A6%AC%EC%95%A1%ED%8A%B8%EC%97%90%EC%84%9C-tailwindcss-styled-components-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0
 // !  https://itchallenger.tistory.com/569 ⭐⭐⭐⭐⭐⭐⭐⭐
@@ -73,7 +73,7 @@ const Login = () => {
     clearErrors,
     formState: { errors, isValid },
   } = useForm<ILoginForm>({
-    mode: 'onChange',
+    mode: "onChange",
   });
 
   const onCompleted = (data: loginMutation) => {
@@ -123,10 +123,10 @@ const Login = () => {
             <Input
               placeholder='Email'
               type='email'
-              {...register('email', {
+              {...register("email", {
                 required: {
                   value: true,
-                  message: 'Email is required',
+                  message: "Email is required",
                 },
                 pattern:
                   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
@@ -136,19 +136,19 @@ const Login = () => {
             <Input
               placeholder='Password'
               type='password'
-              {...register('password', {
+              {...register("password", {
                 required: {
                   value: true,
-                  message: 'Password is required',
+                  message: "Password is required",
                 },
                 minLength: 10,
               })}
             />
             {errors.password?.message && <FormError errorMessage={errors.password?.message} />}
-            {errors.password?.type === 'minLength' && (
-              <FormError errorMessage={'Password must be more than 10 chars'} />
+            {errors.password?.type === "minLength" && (
+              <FormError errorMessage={"Password must be more than 10 chars"} />
             )}
-            <Button canClick={isValid} loading={loading} actionText={'Log in'} />
+            <Button canClick={isValid} loading={loading} actionText={"Log in"} />
             {loginMutationResult?.login.error && (
               <FormError errorMessage={loginMutationResult.login.error} />
             )}

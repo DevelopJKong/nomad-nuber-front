@@ -30,7 +30,7 @@
     "react/react-in-jsx-scope": "off", // React를 import하지 않아도 사용 가능
     "camelcase": "warn", // camelcase 사용하지 않음
     "spaced-comment": "warn", // 주석 앞에 공백을 넣지 않음
-    "quotes": ["error", "single", { "allowTemplateLiterals": true }], // 따옴표 사용
+    "quotes": ["error", "double", { "allowTemplateLiterals": true }], // 따옴표 사용
     "no-duplicate-imports": "error" // 중복 import 에러로 잡음
   },
   "settings": {

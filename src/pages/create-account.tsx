@@ -1,16 +1,16 @@
-import styled from 'styled-components';
-import tw from 'twin.macro';
-import { useForm } from 'react-hook-form';
-import Helmet from 'react-helmet';
-import { FormError } from '../components/form-error';
-import { gql, useMutation } from '@apollo/client';
-import { Button } from '../components/button';
-import { Link, useHistory } from 'react-router-dom';
-import { UserRole } from '../__generated__/globalTypes';
+import styled from "styled-components";
+import tw from "twin.macro";
+import { useForm } from "react-hook-form";
+import Helmet from "react-helmet";
+import { FormError } from "../components/form-error";
+import { gql, useMutation } from "@apollo/client";
+import { Button } from "../components/button";
+import { Link, useHistory } from "react-router-dom";
+import { UserRole } from "../__generated__/globalTypes";
 import {
   createAccountMutation,
   createAccountMutationVariables,
-} from '../__generated__/createAccountMutation';
+} from "../__generated__/createAccountMutation";
 
 const Container = styled.div`
   ${tw`h-screen flex items-center flex-col mt-10 lg:mt-28`}
@@ -74,7 +74,7 @@ const CreactAccount = () => {
     clearErrors,
     formState: { errors, isValid },
   } = useForm<ICreateAccountForm>({
-    mode: 'onChange',
+    mode: "onChange",
     defaultValues: {
       role: UserRole.Client,
     },
@@ -87,8 +87,8 @@ const CreactAccount = () => {
 
     if (ok) {
       // redirect
-      alert('Account Created Log in now!');
-      history.push('/');
+      alert("Account Created Log in now!");
+      history.push("/");
     }
   };
 
@@ -126,10 +126,10 @@ const CreactAccount = () => {
             <Input
               placeholder='Email'
               type='email'
-              {...register('email', {
+              {...register("email", {
                 required: {
                   value: true,
-                  message: 'Email is required',
+                  message: "Email is required",
                 },
                 pattern:
                   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
@@ -139,20 +139,20 @@ const CreactAccount = () => {
             <Input
               placeholder='Password'
               type='password'
-              {...register('password', {
+              {...register("password", {
                 required: {
                   value: true,
-                  message: 'Password is required',
+                  message: "Password is required",
                 },
                 minLength: 10,
               })}
             />
             {errors.password?.message && <FormError errorMessage={errors.password?.message} />}
-            {errors.password?.type === 'minLength' && (
-              <FormError errorMessage={'Password must be more than 10 chars'} />
+            {errors.password?.type === "minLength" && (
+              <FormError errorMessage={"Password must be more than 10 chars"} />
             )}
             <SelectBox
-              {...register('role', {
+              {...register("role", {
                 required: true,
               })}
             >
@@ -160,7 +160,7 @@ const CreactAccount = () => {
                 <option key={index}>{role}</option>
               ))}
             </SelectBox>
-            <Button canClick={isValid} loading={false} actionText={'Create Account'} />
+            <Button canClick={isValid} loading={false} actionText={"Create Account"} />
             {createAccountMutationResult?.createAccount.error && (
               <FormError errorMessage={createAccountMutationResult?.createAccount.error} />
             )}

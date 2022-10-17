@@ -1,10 +1,11 @@
-import styled from 'styled-components';
-import tw from 'twin.macro';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import Restaurants from '../pages/restaurant/restaurants';
-import NotFound from '../pages/404';
-import Header from '../components/header';
-import { useMe } from '../hooks/useMe';
+import styled from "styled-components";
+import tw from "twin.macro";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import Restaurants from "../pages/restaurant/restaurants";
+import NotFound from "../pages/404";
+import Header from "../components/header";
+import { useMe } from "../hooks/useMe";
+import ConfirmEmail from "../pages/user/confirm-email";
 
 const Loading = styled.div`
   ${tw`h-screen flex justify-center items-center`}
@@ -15,9 +16,17 @@ const LoadingText = styled.span`
 `;
 
 const ClientRouter = () => (
-  <Route path='/' exact>
-    <Restaurants />
-  </Route>
+  <>
+    <Route path='/' exact>
+      <Restaurants />
+    </Route>
+    <Route path='/confirm' exact>
+      <ConfirmEmail />
+    </Route>
+    <Route>
+      <NotFound />
+    </Route>
+  </>
 );
 
 const Login = () => {
@@ -33,7 +42,7 @@ const Login = () => {
     <Router>
       <Header />
       <Switch>
-        {data.me.role === 'Client' && <ClientRouter />}
+        {data.me.role === "Client" && <ClientRouter />}
         <Route>
           <NotFound />
         </Route>
