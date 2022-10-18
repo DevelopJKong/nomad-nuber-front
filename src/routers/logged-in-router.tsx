@@ -6,6 +6,7 @@ import NotFound from "../pages/404";
 import Header from "../components/header";
 import { useMe } from "../hooks/useMe";
 import ConfirmEmail from "../pages/user/confirm-email";
+import EditProfile from "../pages/user/edit-profile";
 
 const Loading = styled.div`
   ${tw`h-screen flex justify-center items-center`}
@@ -23,6 +24,9 @@ const ClientRouter = [
   <Route key={2} path='/confirm' exact>
     <ConfirmEmail />
   </Route>,
+  <Route key={3} path="/edit-profile" exact>
+    <EditProfile />
+  </Route>
 ];
 
 const Login = () => {
