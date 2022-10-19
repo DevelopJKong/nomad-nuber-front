@@ -11,7 +11,7 @@ const Container = styled.header`
 `;
 
 const Content = styled.div`
-  ${tw`w-full px-5 xl:px-0 max-w-screen-2xl mx-auto flex justify-between items-center`}
+  ${tw`w-full px-5 xl:px-5 max-w-screen-2xl mx-auto flex justify-between items-center`}
 `;
 
 const Img = styled.img`
