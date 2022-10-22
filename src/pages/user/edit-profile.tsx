@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { gql, useApolloClient, useMutation } from "@apollo/client";
 import React from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
@@ -42,22 +42,39 @@ const EDIT_PROFILE_MUTATION = gql`
 `;
 
 const EditProfile = () => {
-  const { data: userData } = useMe();
-  const onCompleted = (data: editProfile) => {
+  const { data: userData, refetch: refetchUser } = useMe();
+  const client = useApolloClient();
+  const onCompleted = async (data: editProfile) => {
     const {
-      editProfile: { error, ok },
+      editProfile: { ok },
     } = data;
-    if (ok) {
-      // update the cache
+    if (ok && userData) {
+      await refetchUser();
+      // TODO writeFragmet 제대로 이해하기 editProfile
+      // client.writeFragment({
+      //   id: `User:${id}`,
+      //   fragment: gql`
+      //     fragment EditedUser on User {
+      //       verified
+      //       email
+      //     }
+      //   `,
+      //   data: {
+      //     email: newEmail,
+      //     verified: false,
+      //   },
+      // });
     }
   };
   const [editProfile, { loading }] = useMutation<editProfile, editProfileVariables>(
     EDIT_PROFILE_MUTATION,
+    { onCompleted },
   );
   const {
     register,
     handleSubmit,
     clearErrors,
+    getValues,
     formState: { errors },
   } = useForm<IFormProps>({
     mode: "onChange",
