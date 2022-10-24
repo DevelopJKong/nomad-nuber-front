@@ -1,4 +1,5 @@
 import React from "react";
+import { Helmet } from "react-helmet";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import tw from "twin.macro";
@@ -21,6 +22,9 @@ const GoHome = styled(Link)`
 const NotFound = () => {
   return (
     <Container>
+      <Helmet>
+        <title>Not Found | Nuber Eats</title>
+      </Helmet>
       <Title>Page Not Found.</Title>
       <SubTitle>The page you are looking for </SubTitle>
       <GoHome to='/'>Go back home &rarr;</GoHome>

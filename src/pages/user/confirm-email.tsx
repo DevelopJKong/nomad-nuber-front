@@ -1,5 +1,6 @@
 import { gql, useApolloClient, useMutation } from "@apollo/client";
 import { useEffect } from "react";
+import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import tw from "twin.macro";
@@ -29,7 +30,7 @@ const VERIFY_EMAIL_MUTATION = gql`
 
 const ConfirmEmail = () => {
   const { data: userData, refetch } = useMe();
-  const client = useApolloClient(); 
+  const client = useApolloClient();
   const history = useHistory();
   const onCompleted = async (data: verifyEmail) => {
     const {
@@ -69,8 +70,11 @@ const ConfirmEmail = () => {
   }, [verifyEmail]);
   return (
     <Container>
+      <Helmet>
+        <title>Verify Email | Nuber Eats</title>
+      </Helmet>
       <Confirm>confirm-email</Confirm>
-      <Text>Please wait, dont close this page...</Text>
+      <Text>Please wait, don&apos;t close this page...</Text>
     </Container>
   );
 };
