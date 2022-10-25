@@ -24,16 +24,36 @@ const CategoryContainer = styled.div`
   ${tw`flex justify-around max-w-xs mx-auto`}
 `;
 
-const Categories = styled.div`
+const Categories = styled.div.attrs(() => {
+  return {
+    className: "group",
+  };
+})`
   ${tw`flex flex-col items-center`}
 `;
 
 const Category = styled.div`
-  ${tw`w-14 h-14 hover:bg-gray-100 rounded-full bg-red-500 bg-cover cursor-pointer`}
+  ${tw`w-14 h-14 group-hover:bg-gray-100 rounded-full bg-red-500 bg-cover cursor-pointer`}
 `;
 
 const Text = styled.span`
   ${tw`mt-1 text-sm text-center font-medium`}
+`;
+
+const RestaurantWrapper = styled.div`
+  ${tw`grid mt-10 grid-cols-3 gap-7`}
+`;
+
+const Restaurant = styled.div`
+  ${tw`bg-red-500 py-28 bg-cover bg-center`}
+`;
+
+const RestaurantTitle = styled.h3`
+  ${tw`text-lg font-medium`}
+`;
+
+const RestaurantContent = styled.span`
+  ${tw`border-t-2 border-gray-200`}
 `;
 
 const RESTAURANTS_QUERY = gql`
@@ -97,6 +117,17 @@ const Restaurants = () => {
               </Categories>
             ))}
           </CategoryContainer>
+          <RestaurantWrapper>
+            {data?.restaurants.results?.map((restaurant, index) => (
+              <div key={index}>
+                <Restaurant
+                  style={{ backgroundColor: `url(${restaurant.coverImage})` }}
+                ></Restaurant>
+                <RestaurantTitle>{restaurant.name}</RestaurantTitle>
+                <RestaurantContent>{restaurant.category?.name}</RestaurantContent>
+              </div>
+            ))}
+          </RestaurantWrapper>
         </CategoryWrapper>
       )}
     </Container>
