@@ -5,6 +5,8 @@ import {
   restaurantsPageQueryVariables,
 } from "../../__generated__/restaurantsPageQuery";
 import tw from "twin.macro";
+import Restaurant from "../../components/restaurant";
+import { useState } from "react";
 
 const Container = styled.div``;
 
@@ -17,7 +19,7 @@ const Input = styled.input`
 `;
 
 const CategoryWrapper = styled.div`
-  ${tw`max-w-screen-2xl mx-auto mt-8`}
+  ${tw`max-w-screen-2xl pb-20 mx-auto mt-8`}
 `;
 
 const CategoryContainer = styled.div`
@@ -41,19 +43,15 @@ const Text = styled.span`
 `;
 
 const RestaurantWrapper = styled.div`
-  ${tw`grid mt-10 grid-cols-3 gap-7`}
+  ${tw`grid mt-16 grid-cols-3 gap-x-5 gap-y-10`}
 `;
 
-const Restaurant = styled.div`
-  ${tw`bg-red-500 py-28 bg-cover bg-center`}
+const Pages = styled.div`
+  ${tw`grid grid-cols-3 text-center max-w-md items-center mx-auto mt-10`}
 `;
 
-const RestaurantTitle = styled.h3`
-  ${tw`text-lg font-medium`}
-`;
-
-const RestaurantContent = styled.span`
-  ${tw`border-t-2 border-gray-200`}
+const Pointer = styled.button`
+  ${tw`focus:outline-none font-medium text-2xl`}
 `;
 
 const RESTAURANTS_QUERY = gql`
@@ -89,16 +87,20 @@ const RESTAURANTS_QUERY = gql`
 `;
 
 const Restaurants = () => {
+  const [page, setPage] = useState(1);
   const { data, loading, error } = useQuery<restaurantsPageQuery, restaurantsPageQueryVariables>(
     RESTAURANTS_QUERY,
     {
       variables: {
         input: {
-          page: 1,
+          page,
         },
       },
     },
   );
+
+  const onNextPageClick = () => setPage((current) => current + 1);
+  const onPrevPageClick = () => setPage((current) => current - 1);
 
   return (
     <Container>
@@ -119,15 +121,27 @@ const Restaurants = () => {
           </CategoryContainer>
           <RestaurantWrapper>
             {data?.restaurants.results?.map((restaurant, index) => (
-              <div key={index}>
-                <Restaurant
-                  style={{ backgroundColor: `url(${restaurant.coverImage})` }}
-                ></Restaurant>
-                <RestaurantTitle>{restaurant.name}</RestaurantTitle>
-                <RestaurantContent>{restaurant.category?.name}</RestaurantContent>
-              </div>
+              <Restaurant
+                key={index}
+                id={restaurant.id + ""}
+                coverImg={restaurant.coverImg}
+                name={restaurant.name}
+                categoryName={restaurant.category?.name}
+              />
             ))}
+            e
           </RestaurantWrapper>
+          <Pages>
+            {page > 1 ? <Pointer onClick={onPrevPageClick}>&larr;</Pointer> : <div></div>}
+            <span>
+              Page {page} of {data?.restaurants.totalPages}
+            </span>
+            {page !== data?.restaurants.totalPages ? (
+              <Pointer onClick={onNextPageClick}>&rarr;</Pointer>
+            ) : (
+              <div></div>
+            )}
+          </Pages>
         </CategoryWrapper>
       )}
     </Container>
