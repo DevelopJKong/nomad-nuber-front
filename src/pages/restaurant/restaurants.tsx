@@ -8,7 +8,9 @@ import tw from "twin.macro";
 import Restaurant from "../../components/restaurant";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+import { Helmet } from "react-helmet";
+import { RESTAURANT_FRAGMENT } from "../../fragments";
 const Container = styled.div``;
 
 const Form = styled.div`
@@ -114,7 +116,7 @@ const Restaurants = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    // formState: { errors },
   } = useForm<IFormProps>();
   const onValid = async (data: IFormProps) => {
     const { searchTerm } = data;
@@ -125,6 +127,9 @@ const Restaurants = () => {
   };
   return (
     <Container>
+      <Helmet>
+        <title>Home | Nuber Eats</title>
+      </Helmet>
       <Form onSubmit={handleSubmit(onValid)}>
         <Input
           type='Search'
