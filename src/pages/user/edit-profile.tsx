@@ -1,4 +1,4 @@
-import { gql, useApolloClient, useMutation } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import React from "react";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
@@ -43,7 +43,7 @@ const EDIT_PROFILE_MUTATION = gql`
 
 const EditProfile = () => {
   const { data: userData, refetch: refetchUser } = useMe();
-  const client = useApolloClient();
+  // const client = useApolloClient();
   const onCompleted = async (data: editProfile) => {
     const {
       editProfile: { ok },
@@ -74,7 +74,6 @@ const EditProfile = () => {
     register,
     handleSubmit,
     clearErrors,
-    getValues,
     formState: { errors },
   } = useForm<IFormProps>({
     mode: "onChange",

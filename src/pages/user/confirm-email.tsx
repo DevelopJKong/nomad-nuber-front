@@ -1,4 +1,4 @@
-import { gql, useApolloClient, useMutation } from "@apollo/client";
+import { gql, useMutation } from "@apollo/client";
 import { useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useHistory } from "react-router-dom";
@@ -30,7 +30,7 @@ const VERIFY_EMAIL_MUTATION = gql`
 
 const ConfirmEmail = () => {
   const { data: userData, refetch } = useMe();
-  const client = useApolloClient();
+  // const client = useApolloClient();
   const history = useHistory();
   const onCompleted = async (data: verifyEmail) => {
     const {
@@ -53,7 +53,7 @@ const ConfirmEmail = () => {
     }
   };
 
-  const [verifyEmail, { loading: verifyingEmail }] = useMutation<verifyEmail, verifyEmailVariables>(
+  const [verifyEmail, { loading: _ }] = useMutation<verifyEmail, verifyEmailVariables>(
     VERIFY_EMAIL_MUTATION,
     { onCompleted },
   );

@@ -7,7 +7,8 @@ import {
 import tw from "twin.macro";
 import Restaurant from "../../components/restaurant";
 import { useState } from "react";
-
+import { useForm } from "react-hook-form";
+import { Link, useHistory } from "react-router-dom";
 const Container = styled.div``;
 
 const Form = styled.div`
@@ -15,7 +16,7 @@ const Form = styled.div`
 `;
 
 const Input = styled.input`
-  ${tw`rounded-md border-0 w-3/12`}
+  ${tw`focus:outline-none focus:border-gray-500 p-3 border-2 text-lg border-gray-200 transition-colors rounded-md  w-3/4 md:w-3/12`}
 `;
 
 const CategoryWrapper = styled.div`
@@ -24,6 +25,10 @@ const CategoryWrapper = styled.div`
 
 const CategoryContainer = styled.div`
   ${tw`flex justify-around max-w-xs mx-auto`}
+`;
+
+const CategoryGrid = styled.div`
+  ${tw`grid mt-16 lg:grid-cols-3 gap-x-5 gap-y-10`}
 `;
 
 const Categories = styled.div.attrs(() => {
@@ -86,9 +91,14 @@ const RESTAURANTS_QUERY = gql`
   }
 `;
 
+interface IFormProps {
+  searchTerm: string;
+}
+
 const Restaurants = () => {
   const [page, setPage] = useState(1);
-  const { data, loading, error } = useQuery<restaurantsPageQuery, restaurantsPageQueryVariables>(
+  const history = useHistory();
+  const { data, loading } = useQuery<restaurantsPageQuery, restaurantsPageQueryVariables>(
     RESTAURANTS_QUERY,
     {
       variables: {
@@ -101,23 +111,40 @@ const Restaurants = () => {
 
   const onNextPageClick = () => setPage((current) => current + 1);
   const onPrevPageClick = () => setPage((current) => current - 1);
-
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormProps>();
+  const onValid = async (data: IFormProps) => {
+    const { searchTerm } = data;
+    history.push({
+      pathname: "/search",
+      search: `?term=${searchTerm}`,
+    });
+  };
   return (
     <Container>
-      <Form>
-        <Input type='Search' placeholder='Search restaurant...' />
+      <Form onSubmit={handleSubmit(onValid)}>
+        <Input
+          type='Search'
+          placeholder='Search restaurant...'
+          {...register("searchTerm", { required: true })}
+        />
       </Form>
       {!loading && (
         <CategoryWrapper>
           <CategoryContainer>
-            {data?.allCategories.categories?.map((category, index) => (
-              <Categories key={index}>
-                <Category style={{ backgroundImage: `url(${category.coverImage})` }}>
-                  {category.name}
-                </Category>
-                <Text>{category.name}</Text>
-              </Categories>
-            ))}
+            <CategoryGrid>
+              {data?.allCategories.categories?.map((category, index) => (
+                <Categories key={index}>
+                  <Category style={{ backgroundImage: `url(${category.coverImage})` }}>
+                    {category.name}
+                  </Category>
+                  <Text>{category.name}</Text>
+                </Categories>
+              ))}
+            </CategoryGrid>
           </CategoryContainer>
           <RestaurantWrapper>
             {data?.restaurants.results?.map((restaurant, index) => (
