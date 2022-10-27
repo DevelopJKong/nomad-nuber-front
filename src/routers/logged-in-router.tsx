@@ -8,6 +8,7 @@ import { useMe } from "../hooks/useMe";
 import ConfirmEmail from "../pages/user/confirm-email";
 import EditProfile from "../pages/user/edit-profile";
 import { Search } from "../pages/restaurant/search";
+import Category from "../pages/restaurant/category";
 
 const Loading = styled.div`
   ${tw`h-screen flex justify-center items-center`}
@@ -30,6 +31,9 @@ const ClientRouter = [
   </Route>,
   <Route key={4} path='/search'>
     <Search />
+  </Route>,
+  <Route key={5} path='/category/:slug'>
+    <Category />
   </Route>,
 ];
 

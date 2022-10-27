@@ -8,9 +8,9 @@ import tw from "twin.macro";
 import Restaurant from "../../components/restaurant";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
-import { RESTAURANT_FRAGMENT } from "../../fragments";
+import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
 const Container = styled.div``;
 
 const Form = styled.div`
@@ -67,11 +67,7 @@ const RESTAURANTS_QUERY = gql`
       ok
       error
       categories {
-        id
-        name
-        coverImage
-        slug
-        restaurantCount
+        ...CategoryParts
       }
     }
     restaurants(input: $input) {
@@ -85,6 +81,7 @@ const RESTAURANTS_QUERY = gql`
     }
   }
   ${RESTAURANT_FRAGMENT}
+  ${CATEGORY_FRAGMENT}
 `;
 
 interface IFormProps {
@@ -136,12 +133,15 @@ const Restaurants = () => {
           <CategoryContainer>
             <CategoryGrid>
               {data?.allCategories.categories?.map((category, index) => (
-                <Categories key={index}>
-                  <Category style={{ backgroundImage: `url(${category.coverImage})` }}>
-                    {category.name}
-                  </Category>
-                  <Text>{category.name}</Text>
-                </Categories>
+                <>
+                  <Link to={`/category/${category.slug}`} />
+                  <Categories key={index}>
+                    <Category style={{ backgroundImage: `url(${category.coverImage})` }}>
+                      {category.name}
+                    </Category>
+                    <Text>{category.name}</Text>
+                  </Categories>
+                </>
               ))}
             </CategoryGrid>
           </CategoryContainer>
