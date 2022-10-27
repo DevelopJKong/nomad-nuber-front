@@ -2,7 +2,7 @@ import { gql, useLazyQuery } from "@apollo/client";
 import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useHistory, useLocation } from "react-router-dom";
-// import { RESTAURANT_FRAGMENT } from "../../fragments";
+import { RESTAURANT_FRAGMENT } from "../../fragments";
 import { searchRestaurant, searchRestaurantVariables } from "../../__generated__/searchRestaurant";
 
 const SEARCH_RESTAURANT = gql`
@@ -13,17 +13,11 @@ const SEARCH_RESTAURANT = gql`
       totalPages
       totalResults
       restaurants {
-        id
-        name
-        coverImg
-        category {
-          name
-        }
-        address
-        isPromoted
+        ...RestaurantParts
       }
     }
   }
+  ${RESTAURANT_FRAGMENT}
 `;
 
 export const Search = () => {

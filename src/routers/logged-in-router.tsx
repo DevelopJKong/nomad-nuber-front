@@ -7,7 +7,7 @@ import Header from "../components/header";
 import { useMe } from "../hooks/useMe";
 import ConfirmEmail from "../pages/user/confirm-email";
 import EditProfile from "../pages/user/edit-profile";
-import Search from "../pages/restaurant/search";
+import { Search } from "../pages/restaurant/search";
 
 const Loading = styled.div`
   ${tw`h-screen flex justify-center items-center`}
@@ -22,15 +22,15 @@ const ClientRouter = [
   <Route key={1} path='/' exact>
     <Restaurants />
   </Route>,
-  <Route key={2} path='/confirm' >
+  <Route key={2} path='/confirm'>
     <ConfirmEmail />
   </Route>,
-  <Route key={3} path="/edit-profile" >
+  <Route key={3} path='/edit-profile'>
     <EditProfile />
   </Route>,
-  <Route key={4} path="/search" >
+  <Route key={4} path='/search'>
     <Search />
-  </Route>
+  </Route>,
 ];
 
 const Login = () => {
