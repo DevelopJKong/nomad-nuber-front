@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
 import tw from "twin.macro";
 
@@ -24,13 +25,15 @@ const RestaurantTitle = styled.h3`
 const RestaurantContent = styled.span`
   ${tw`border-t mt-3 py-2 text-xs opacity-50 border-gray-200`}
 `;
-const Restaurant: React.FC<IRestaurantProps> = ({ coverImg, name, categoryName }) => {
+const Restaurant: React.FC<IRestaurantProps> = ({ id, coverImg, name, categoryName }) => {
   return (
-    <RestaurantBox>
-      <RestaurantImg style={{ backgroundColor: `url(${coverImg})` }}></RestaurantImg>
-      <RestaurantTitle>{name}</RestaurantTitle>
-      <RestaurantContent>{categoryName}</RestaurantContent>
-    </RestaurantBox>
+    <Link to={`/restaurants/${id}`}>
+      <RestaurantBox>
+        <RestaurantImg style={{ backgroundColor: `url(${coverImg})` }}></RestaurantImg>
+        <RestaurantTitle>{name}</RestaurantTitle>
+        <RestaurantContent>{categoryName}</RestaurantContent>
+      </RestaurantBox>
+    </Link>
   );
 };
 
