@@ -41,7 +41,7 @@ const ClientRouter = [
   </Route>,
 ];
 
-const Login = () => {
+const LoggedInRouter = () => {
   const { data, loading, error } = useMe();
   if (!data || loading || error) {
     return (
@@ -63,4 +63,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default LoggedInRouter;

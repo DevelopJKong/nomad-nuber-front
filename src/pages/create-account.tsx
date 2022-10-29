@@ -67,7 +67,7 @@ interface ICreateAccountForm {
   role: UserRole;
 }
 
-const CreactAccount = () => {
+const CreateAccount = () => {
   const {
     register,
     handleSubmit,
@@ -174,4 +174,4 @@ const CreactAccount = () => {
   );
 };
 
-export default CreactAccount;
+export default CreateAccount;
