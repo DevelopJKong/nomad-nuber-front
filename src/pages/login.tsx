@@ -51,7 +51,7 @@ const RegisterLink = styled(Link)`
 //   ${tw`font-medium text-red-500`}
 // `;
 
-const LOGIN_MUTATION = gql`
+export const LOGIN_MUTATION = gql`
   mutation loginMutation($loginInput: LoginInput!) {
     login(input: $loginInput) {
       ok
@@ -121,6 +121,7 @@ const Login = () => {
           <Title>Welcome back</Title>
           <Form onSubmit={handleSubmit(onValid)} onClick={() => clearErrors()}>
             <Input
+              role="email"
               placeholder='Email'
               type='email'
               {...register("email", {
@@ -132,8 +133,12 @@ const Login = () => {
                   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
               })}
             />
+            {errors.email?.type === "pattern" && (
+              <FormError errorMessage={"Please enter a valid email"} />
+            )}
             {errors.email?.message && <FormError errorMessage={errors.email?.message} />}
             <Input
+              role="password"
               placeholder='Password'
               type='password'
               {...register("password", {
@@ -141,13 +146,10 @@ const Login = () => {
                   value: true,
                   message: "Password is required",
                 },
-                minLength: 10,
               })}
             />
             {errors.password?.message && <FormError errorMessage={errors.password?.message} />}
-            {errors.password?.type === "minLength" && (
-              <FormError errorMessage={"Password must be more than 10 chars"} />
-            )}
+
             <Button canClick={isValid} loading={loading} actionText={"Log in"} />
             {loginMutationResult?.login.error && (
               <FormError errorMessage={loginMutationResult.login.error} />

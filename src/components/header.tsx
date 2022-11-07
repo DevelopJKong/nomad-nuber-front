@@ -5,6 +5,7 @@ import tw from "twin.macro";
 import { LOGO } from "../constants";
 import { useMe } from "../hooks/useMe";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { isLoggedInVar } from "../apollo";
 
 const Container = styled.header`
   ${tw`py-4`}
@@ -46,6 +47,7 @@ const Header: React.FC = () => {
             <Link to='/my-profile'>
               <Person icon={faUser} />
             </Link>
+            <Text onClick={() => isLoggedInVar(false)}>Log out &rarr;</Text>
           </Text>
         </Content>
       </Container>

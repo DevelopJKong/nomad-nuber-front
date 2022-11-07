@@ -136,7 +136,7 @@ const Restaurants = () => {
                 <>
                   <Link to={`/category/${category.slug}`} />
                   <Categories key={index}>
-                    <Category style={{ backgroundImage: `url(${category.coverImage})` }}>
+                    <Category style={{ backgroundImage: `url(${category.coverImg})` }}>
                       {category.name}
                     </Category>
                     <Text>{category.name}</Text>

@@ -11,7 +11,7 @@ export interface CategoryParts {
   __typename: "Category";
   id: number;
   name: string;
-  coverImage: string | null;
+  coverImg: string | null;
   slug: string;
   restaurantCount: number;
 }

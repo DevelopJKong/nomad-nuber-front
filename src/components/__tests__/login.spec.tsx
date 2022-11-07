@@ -1,18 +1,17 @@
 import React from "react";
 import { ApolloProvider } from "@apollo/client";
-import { createMockClient } from "mock-apollo-client";
-import { render, RenderResult, waitFor } from "@testing-library/react";
-import Login from "../../pages/login";
+import { createMockClient, MockApolloClient } from "mock-apollo-client";
+import { render, waitFor, screen, fireEvent } from "@testing-library/react";
+import Login, { LOGIN_MUTATION } from "../../pages/login";
 import { HelmetProvider } from "react-helmet-async";
 import { BrowserRouter as Router } from "react-router-dom";
 import userEvent from "@testing-library/user-event";
-
 describe("<Login />", () => {
-  let renderResult: RenderResult;
+  let mockedClient: MockApolloClient;
   beforeEach(async () => {
     await waitFor(() => {
-      const mockedClient = createMockClient();
-      renderResult = render(
+      mockedClient = createMockClient();
+      render(
         <HelmetProvider>
           <Router>
             <ApolloProvider client={mockedClient}>
@@ -28,17 +27,77 @@ describe("<Login />", () => {
       expect(document.title).toBe("Login | Nuber Eats");
     });
   });
-  it("displays email validation errors", async () => {
-    const { getByPlaceholderText, debug, getByRole } = renderResult;
-    const email = getByPlaceholderText(/email/i);
-    await waitFor(() => {
-      userEvent.type(email, "this@wont");
+
+  it("displays email validation errors when we type something", async () => {
+    fireEvent.input(screen.getByRole("email"), {
+      target: {
+        value: "email",
+      },
     });
-    debug();
-    const errorMessage = getByRole("alert");
-    expect(errorMessage).toHaveTextContent(/please enter a valid email/i);
-    await waitFor(() => {
-      userEvent.clear(email);
+
+    expect(await screen.findAllByRole("alert")).toHaveLength(1);
+  });
+
+  it("displays email validation errors when we type nothing", async () => {
+    fireEvent.input(screen.getByRole("email"), {
+      target: {
+        value: "email",
+      },
+    });
+
+    fireEvent.change(screen.getByRole("email"), {
+      target: {
+        value: "",
+      },
+    });
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(/email is required/i);
+  });
+
+  it("display password required errors", async () => {
+    const email = screen.getByRole("email");
+    const submitBtn = screen.getByRole("button");
+
+    fireEvent.input(email, {
+      target: {
+        value: "test@naver.com",
+      },
+    });
+
+    fireEvent.submit(submitBtn);
+
+    expect(await screen.findByRole("alert")).toHaveTextContent(/password is required/i);
+  });
+
+  it("submits form and calls mutation", async () => {
+    const email = screen.getByRole("email");
+    const password = screen.getByRole("password");
+    const submitBtn = screen.getByRole("button");
+    const user = userEvent.setup();
+    const formData = {
+      email: "real@test.com",
+      password: "123",
+    };
+    const mockedMutationResponse = jest.fn().mockResolvedValue({
+      data: {
+        login: {
+          ok: true,
+          token: "XXX",
+          error: null,
+        },
+      },
+    });
+    mockedClient.setRequestHandler(LOGIN_MUTATION, mockedMutationResponse);
+
+    await user.type(email, formData.email);
+    await user.type(password, formData.password);
+    await user.click(submitBtn);
+    expect(mockedMutationResponse).toHaveBeenCalledTimes(1);
+    expect(mockedMutationResponse).toHaveBeenCalledWith({
+      loginInput: {
+        email: formData.email,
+        password: formData.password,
+      },
     });
   });
 });
