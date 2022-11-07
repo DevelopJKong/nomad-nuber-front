@@ -116,7 +116,7 @@ const CreateAccount = () => {
   return (
     <Container>
       <Helmet>
-        <title>Login | Nuber Eats</title>
+        <title>Create Account | Nuber Eats</title>
       </Helmet>
       <Content>
         <Screen>
