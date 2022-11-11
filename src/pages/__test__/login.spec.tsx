@@ -9,7 +9,7 @@ import {
   getByRole,
   RenderResult,
 } from "@testing-library/react";
-import Login, { LOGIN_MUTATION } from "../../pages/login";
+import Login, { LOGIN_MUTATION } from "../login";
 import { HelmetProvider } from "react-helmet-async";
 import { BrowserRouter as Router } from "react-router-dom";
 import userEvent from "@testing-library/user-event";

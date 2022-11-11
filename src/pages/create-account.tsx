@@ -52,7 +52,7 @@ const SelectBox = styled.select`
 //   ${tw`font-medium text-red-500`}
 // `;
 
-const CREATE_ACCOUNT_MUTATION = gql`
+export const CREATE_ACCOUNT_MUTATION = gql`
   mutation createAccountMutation($createAccountInput: CreateAccountInput!) {
     createAccount(input: $createAccountInput) {
       ok
@@ -124,6 +124,7 @@ const CreateAccount = () => {
           <Title>Welcome back</Title>
           <Form onSubmit={handleSubmit(onValid)} onClick={() => clearErrors()}>
             <Input
+              role="email"
               placeholder='Email'
               type='email'
               {...register("email", {
@@ -135,8 +136,12 @@ const CreateAccount = () => {
                   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
               })}
             />
+            {errors.email?.type === "pattern" && (
+              <FormError errorMessage={"Please enter a valid email"} />
+            )}
             {errors.email?.message && <FormError errorMessage={errors.email?.message} />}
             <Input
+              role="password"
               placeholder='Password'
               type='password'
               {...register("password", {
@@ -152,6 +157,7 @@ const CreateAccount = () => {
               <FormError errorMessage={"Password must be more than 10 chars"} />
             )}
             <SelectBox
+              role="role"
               {...register("role", {
                 required: true,
               })}
