@@ -11,6 +11,7 @@ import { Search } from "../pages/restaurant/search";
 import Category from "../pages/restaurant/category";
 import Restaurant from "../pages/restaurant/restaurant";
 import { MyRestaurants } from "../pages/owner/my-restaurants";
+import AddRestaurants from "../pages/owner/add-restaurants";
 
 const Loading = styled.div`
   ${tw`h-screen flex justify-center items-center`}
@@ -55,6 +56,10 @@ const restaurantRoutes = [
     path: "/",
     component: <MyRestaurants />,
   },
+  {
+    path: "/add-restaurant",
+    component: <AddRestaurants />,
+  },
 ];
 
 const LoggedInRouter = () => {
@@ -72,18 +77,18 @@ const LoggedInRouter = () => {
       <Switch>
         {data.me.role === "Client" &&
           clientRoutes.map((route) => (
-            <Route key={route.path} path={route.path}>
+            <Route exact key={route.path} path={route.path}>
               {route.component}
             </Route>
           ))}
         {commonRoutes.map((route) => (
-          <Route key={route.path} path={route.path}>
+          <Route exact key={route.path} path={route.path}>
             {route.component}
           </Route>
         ))}
         {data.me.role === "Owner" &&
           restaurantRoutes.map((route) => (
-            <Route key={route.path} path={route.path}>
+            <Route exact key={route.path} path={route.path}>
               {route.component}
             </Route>
           ))}

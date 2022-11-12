@@ -39,7 +39,7 @@ const Form = styled.form`
   ${tw`grid gap-3 mt-5 w-full mb-5`}
 `;
 
-const Input = styled.input`
+export const Input = styled.input`
   ${tw`focus:outline-none focus:border-gray-500 p-3 border-2 text-lg border-gray-200 transition-colors`}
 `;
 
@@ -81,6 +81,7 @@ const Login = () => {
       login: { error, ok, token },
     } = data;
     if (ok && token) {
+      console.log(data);
       localStorage.setItem(LOCALSTORAGE_TOKEN, token);
       authTokenVar(token);
       isLoggedInVar(true);
