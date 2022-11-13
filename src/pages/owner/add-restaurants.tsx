@@ -1,29 +1,42 @@
 import { gql, useMutation } from "@apollo/client";
-import React from "react";
+import axios from "axios";
+import React, { useState } from "react";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { Button } from "../../components/button";
+import { FormError } from "../../components/form-error";
 import { createRestaurant, createRestaurantVariables } from "../../__generated__/createRestaurant";
-import { CREATE_ACCOUNT_MUTATION } from "../create-account";
 import { Input as LoginInput } from "../login";
+import { MY_RESTAURANTS_QUERY } from "./my-restaurants";
 
 const Container = styled.div`
-  ${tw`container`}
+  ${tw`container flex flex-col items-center mt-10`}
 `;
 
-const Title = styled.h1``;
+const TitleTag = styled.h4`
+  ${tw`font-semibold text-2xl mb-3`}
+`;
 
-const Form = styled.form``;
+const Form = styled.form`
+  ${tw`grid max-w-screen-sm gap-3 mt-5 w-full mb-5`}
+`;
 
 const Input = styled(LoginInput)``;
+
+const FileBox = styled.div``;
+
+const FileInput = styled.input``;
+
+const ErrorBox = styled.div``;
 
 const CREATE_RESTAURANT_MUTATION = gql`
   mutation createRestaurant($input: CreateRestaurantInput!) {
     createRestaurant(input: $input) {
       error
       ok
+      restaurantId
     }
   }
 `;
@@ -32,25 +45,65 @@ interface IFormProps {
   name: string;
   address: string;
   categoryName: string;
+  file: FileList;
 }
 
 const AddRestaurants = () => {
-  const [createRestaurantMutation, { loading, data }] = useMutation<
+  const onCompleted = (data: createRestaurant) => {
+    const {
+      createRestaurant: { ok, restaurantId },
+    } = data;
+
+    if (ok) {
+      setUploading(false);
+    }
+  };
+
+  const [createRestaurantMutation, { data }] = useMutation<
     createRestaurant,
     createRestaurantVariables
-  >(CREATE_ACCOUNT_MUTATION);
+  >(CREATE_RESTAURANT_MUTATION, {
+    onCompleted,
+    // refetchQueries: [{ query: MY_RESTAURANTS_QUERY }],
+  });
 
   const {
     register,
     handleSubmit,
-    clearErrors,
     formState: { errors, isValid },
   } = useForm<IFormProps>({
     mode: "onChange",
   });
 
-  const onSubmit = (data: IFormProps) => {
-    console.log(data);
+  const [uploading, setUploading] = useState(false);
+
+  const onSubmit = async (data: IFormProps) => {
+    const { file, name, categoryName, address } = data;
+    try {
+      setUploading(true);
+      const actualFile = file[0];
+      const formBody = new FormData();
+      formBody.append("file", actualFile);
+      const {
+        data: { url: coverImg },
+      } = await axios(`http://localhost:5000/uploads/upload`, {
+        method: "POST",
+        data: formBody,
+      });
+
+      createRestaurantMutation({
+        variables: {
+          input: {
+            name,
+            categoryName,
+            address,
+            coverImg,
+          },
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -58,7 +111,7 @@ const AddRestaurants = () => {
       <Helmet>
         <title>Add Restaurant</title>
       </Helmet>
-      <Title>Add Restaurant</Title>
+      <TitleTag>Add Restaurant</TitleTag>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <Input
           type='text'
@@ -70,6 +123,9 @@ const AddRestaurants = () => {
             },
           })}
         />
+
+        {errors?.name?.message && <ErrorBox>{errors.name.message}</ErrorBox>}
+
         <Input
           type='text'
           placeholder='Address'
@@ -81,6 +137,8 @@ const AddRestaurants = () => {
           })}
         />
 
+        {errors?.address?.message && <ErrorBox>{errors?.address?.message}</ErrorBox>}
+
         <Input
           type='text'
           placeholder='Category Name'
@@ -91,7 +149,19 @@ const AddRestaurants = () => {
             },
           })}
         />
-        <Button loading={loading} canClick={isValid} actionText='Create Restaurant' />
+
+        <FileBox>
+          <FileInput
+            type='file'
+            accept='image/*'
+            {...register("file", {
+              required: true,
+            })}
+          />
+        </FileBox>
+
+        <Button loading={uploading} canClick={isValid} actionText='Create Restaurant' />
+        {data?.createRestaurant?.error && <FormError errorMessage={data.createRestaurant.error} />}
       </Form>
     </Container>
   );

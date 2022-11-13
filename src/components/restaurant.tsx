@@ -15,7 +15,7 @@ const RestaurantBox = styled.div`
 `;
 
 const RestaurantImg = styled.div`
-  ${tw`bg-red-500 py-28 bg-cover bg-center`}
+  ${tw`py-28 bg-cover bg-center`}
 `;
 
 const RestaurantTitle = styled.h3`
@@ -29,7 +29,8 @@ const Restaurant: React.FC<IRestaurantProps> = ({ id, coverImg, name, categoryNa
   return (
     <Link to={`/restaurants/${id}`}>
       <RestaurantBox>
-        <RestaurantImg style={{ backgroundColor: `url(${coverImg})` }}></RestaurantImg>
+        <img src='' />
+        <RestaurantImg style={{ backgroundImage: `url(${coverImg})` }}></RestaurantImg>
         <RestaurantTitle>{name}</RestaurantTitle>
         <RestaurantContent>{categoryName}</RestaurantContent>
       </RestaurantBox>

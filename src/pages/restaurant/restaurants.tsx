@@ -49,7 +49,7 @@ const Text = styled.span`
   ${tw`mt-1 text-sm text-center font-medium`}
 `;
 
-const RestaurantWrapper = styled.div`
+export const RestaurantWrapper = styled.div`
   ${tw`grid mt-16 grid-cols-3 gap-x-5 gap-y-10`}
 `;
 
@@ -155,7 +155,6 @@ const Restaurants = () => {
                 categoryName={restaurant.category?.name}
               />
             ))}
-            e
           </RestaurantWrapper>
           <Pages>
             {page > 1 ? <Pointer onClick={onPrevPageClick}>&larr;</Pointer> : <div></div>}
