@@ -1,6 +1,6 @@
-import { gql, useMutation } from "@apollo/client";
-import axios from "axios";
 import React, { useState } from "react";
+import { gql, useApolloClient, useMutation } from "@apollo/client";
+import axios from "axios";
 import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import styled from "styled-components";
@@ -10,6 +10,7 @@ import { FormError } from "../../components/form-error";
 import { createRestaurant, createRestaurantVariables } from "../../__generated__/createRestaurant";
 import { Input as LoginInput } from "../login";
 import { MY_RESTAURANTS_QUERY } from "./my-restaurants";
+import { useHistory } from "react-router-dom";
 
 const Container = styled.div`
   ${tw`container flex flex-col items-center mt-10`}
@@ -49,13 +50,42 @@ interface IFormProps {
 }
 
 const AddRestaurants = () => {
+  const client = useApolloClient();
+  const history = useHistory();
+  const [imageUrl, setImageUrl] = useState("");
   const onCompleted = (data: createRestaurant) => {
     const {
       createRestaurant: { ok, restaurantId },
     } = data;
 
     if (ok) {
+      const { name, categoryName, address } = getValues();
       setUploading(false);
+      const queryResult = client.readQuery({ query: MY_RESTAURANTS_QUERY });
+      client.writeQuery({
+        query: MY_RESTAURANTS_QUERY,
+        data: {
+          myRestaurants: {
+            ...queryResult.myRestaurants,
+            restaurants: [
+              {
+                address,
+                category: {
+                  name: categoryName,
+                  __typename: "Category",
+                },
+                coverImg: imageUrl,
+                id: restaurantId,
+                isPromoted: false,
+                name,
+                __typename: "Restaurant",
+              },
+              ...queryResult.myRestaurants.restaurants,
+            ],
+          },
+        },
+      });
+      history.push("/");
     }
   };
 
@@ -71,6 +101,7 @@ const AddRestaurants = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
+    getValues,
   } = useForm<IFormProps>({
     mode: "onChange",
   });
@@ -90,7 +121,7 @@ const AddRestaurants = () => {
         method: "POST",
         data: formBody,
       });
-
+      setImageUrl(coverImg);
       createRestaurantMutation({
         variables: {
           input: {
