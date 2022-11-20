@@ -12,6 +12,7 @@ import Category from "../pages/restaurant/category";
 import Restaurant from "../pages/restaurant/restaurant";
 import { MyRestaurants } from "../pages/owner/my-restaurants";
 import AddRestaurants from "../pages/owner/add-restaurants";
+import { MyRestaurant } from "../pages/owner/my-restaurant";
 
 const Loading = styled.div`
   ${tw`h-screen flex justify-center items-center`}
@@ -59,6 +60,10 @@ const restaurantRoutes = [
   {
     path: "/add-restaurant",
     component: <AddRestaurants />,
+  },
+  {
+    path: "/restaurants/:id",
+    component: <MyRestaurant />,
   },
 ];
 
