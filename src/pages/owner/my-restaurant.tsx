@@ -27,10 +27,12 @@ const PromotionLink = styled(Link)`
   ${tw`text-white bg-lime-700 py-3 px-10`}
 `;
 
-const Upload = styled.div``;
+const Upload = styled.div`
+  ${tw`mt-10`}
+`;
 
 const UploadText = styled.h4``;
-const MY_RESTAURANT_QUERY = gql`
+export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
     myRestaurant(input: $input) {
       ok
@@ -64,7 +66,7 @@ export const MyRestaurant = () => {
       <Image style={{ backgroundImage: `url(${data?.myRestaurant.restaurant?.coverImg})` }} />
       <Container>
         <Title>{data?.myRestaurant.restaurant?.name || "Loading..."}</Title>
-        <AddLink to={""}>Add Dish &rarr;</AddLink>
+        <AddLink to={`/restaurants/${id}/add-dish`}>Add Dish &rarr;</AddLink>
         <PromotionLink to={""}>Buy Promotion</PromotionLink>
         <Upload>
           {data?.myRestaurant.restaurant?.menu.length === 0 ? (
