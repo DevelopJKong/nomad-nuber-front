@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { gql, useMutation } from "@apollo/client";
 import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
@@ -25,6 +25,30 @@ const Input = styled.input`
   ${tw`focus:outline-none focus:border-gray-500 p-3 border-2 text-lg border-gray-200 transition-colors`}
 `;
 
+const Content = styled.div`
+  ${tw`my-10`}
+`;
+
+const ContentTitle = styled.h4`
+  ${tw`font-medium mb-3 text-lg`}
+`;
+
+const OptionText = styled.span`
+  ${tw`cursor-pointer text-white bg-gray-900 py-1 px-2 mt-5`}
+`;
+
+const OptionInputBox = styled.div`
+  ${tw`mt-5`}
+`;
+
+const OptionInputFirst = styled.input`
+  ${tw`py-2 px-4 focus:outline-none mr-3 focus:border-gray-600 border-2`}
+`;
+
+const OptionInputSecond = styled.input`
+  ${tw`py-2 px-4 focus:outline-none focus:border-gray-600 border-2`}
+`;
+
 const CREATE_DISH_MUTATION = gql`
   mutation createDish($input: CreateDishInput!) {
     createDish(input: $input) {
@@ -42,11 +66,24 @@ interface IForm {
   name: string;
   price: string;
   description: string;
+  [key: string]: string;
 }
 
 const AddDish = () => {
   const { restaurantId } = useParams<IParams>();
   const history = useHistory();
+  const [optionsNumber, setOptionsNumber] = useState(0);
+
+  const onAddOptionClick = () => {
+    setOptionsNumber((current) => current + 1);
+  };
+
+  const onDeleteClick = (index: number) => {
+    setOptionsNumber((current) => current - 1);
+    setValue(`${index}-optionName`, "");
+    setValue(`${index}-optionExtra`, "");
+  };
+
   const [createDishMutation, { loading }] = useMutation<createDish, createDishVariables>(
     CREATE_DISH_MUTATION,
     {
@@ -82,6 +119,7 @@ const AddDish = () => {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isValid },
   } = useForm<IForm>({
     mode: "onChange",
@@ -93,7 +131,7 @@ const AddDish = () => {
         <title>Add Dish | Nuber Eats</title>
       </Helmet>
       <Title>Add Dish</Title>
-      <Form>
+      <Form onSubmit={handleSubmit(onSubmit)}>
         <Input
           type='text'
           placeholder='Name'
@@ -126,6 +164,27 @@ const AddDish = () => {
             },
           })}
         />
+        <Content>
+          <ContentTitle>Dish Options</ContentTitle>
+          <OptionText onClick={onAddOptionClick}>Add Dish Option</OptionText>
+          {optionsNumber !== 0 &&
+            Array.from(new Array(optionsNumber)).map((_, index) => (
+              <OptionInputBox key={index}>
+                <OptionInputFirst
+                  type='text'
+                  placeholder='Option Name'
+                  {...register(`${index}-optionName`)}
+                />
+                <OptionInputSecond
+                  type='number'
+                  placeholder='Option Extra'
+                  {...register(`${index}-optionExtra`)}
+                />
+                <span onClick={() => onDeleteClick(index)}>&nbsp;Delete Options</span>
+              </OptionInputBox>
+            ))}
+        </Content>
+
         <Button loading={loading} canClick={isValid} actionText={"Create Dish"} />
       </Form>
     </Container>
