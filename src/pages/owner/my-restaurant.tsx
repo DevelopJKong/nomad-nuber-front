@@ -6,6 +6,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { myRestaurant, myRestaurantVariables } from "../../__generated__/myRestaurant";
 import Dish from "../../components/dish";
+import { VictoryBar, VictoryChart, VictoryAxis } from "victory";
 const Wrapper = styled.div``;
 
 const Image = styled.div`
@@ -36,6 +37,18 @@ const UploadText = styled.h4``;
 
 const DishWrapper = styled.div`
   ${tw`grid mt-16 md:grid-cols-4 gap-x-5 gap-y-10`}
+`;
+
+const SaleWrapper = styled.div`
+  ${tw`mt-20 mb-10`}
+`;
+
+const SaleText = styled.h4`
+  ${tw`text-center`}
+`;
+
+const Sale = styled.div`
+  ${tw`max-w-md w-full mx-auto`}
 `;
 
 export const MY_RESTAURANT_QUERY = gql`
@@ -90,6 +103,31 @@ export const MyRestaurant = () => {
             </DishWrapper>
           )}
         </Upload>
+        <SaleWrapper>
+          <SaleText>Sales</SaleText>
+          <Sale>
+            <VictoryChart domainPadding={20}>
+              <VictoryAxis
+                animate={{
+                  duration: 2000,
+                  easing: "bounce",
+                }}
+                dependentAxis
+                tickValues={[20, 30, 40, 50, 60]}
+              />
+
+              <VictoryAxis label='Amount of Money' />
+              <VictoryBar
+                data={[
+                  { x: 10, y: 20 },
+                  { x: 20, y: 10 },
+                  { x: 35, y: 5 },
+                  { x: 45, y: 99 },
+                ]}
+              />
+            </VictoryChart>
+          </Sale>
+        </SaleWrapper>
       </Container>
     </Wrapper>
   );

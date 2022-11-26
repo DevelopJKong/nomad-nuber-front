@@ -32,7 +32,7 @@ const Dish: React.FC<IDishProps> = ({ description, name, price }) => {
       <Content>
         <Name>{name}</Name>
         <Description>{description}</Description>
-        <Price>{price}</Price>
+        <Price>${price}</Price>
       </Content>
     </Container>
   );
