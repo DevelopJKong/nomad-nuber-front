@@ -5,6 +5,7 @@ import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { myRestaurant, myRestaurantVariables } from "../../__generated__/myRestaurant";
+import Dish from "../../components/dish";
 const Wrapper = styled.div``;
 
 const Image = styled.div`
@@ -32,6 +33,11 @@ const Upload = styled.div`
 `;
 
 const UploadText = styled.h4``;
+
+const DishWrapper = styled.div`
+  ${tw`grid mt-16 md:grid-cols-4 gap-x-5 gap-y-10`}
+`;
+
 export const MY_RESTAURANT_QUERY = gql`
   query myRestaurant($input: MyRestaurantInput!) {
     myRestaurant(input: $input) {
@@ -71,7 +77,18 @@ export const MyRestaurant = () => {
         <Upload>
           {data?.myRestaurant.restaurant?.menu.length === 0 ? (
             <UploadText>Please upload a dish</UploadText>
-          ) : null}
+          ) : (
+            <DishWrapper>
+              {data?.myRestaurant.restaurant?.menu.map((dish, index) => (
+                <Dish
+                  key={index}
+                  name={dish.name}
+                  description={dish.description}
+                  price={dish.price}
+                />
+              ))}
+            </DishWrapper>
+          )}
         </Upload>
       </Container>
     </Wrapper>
