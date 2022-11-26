@@ -6,7 +6,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { myRestaurant, myRestaurantVariables } from "../../__generated__/myRestaurant";
 import Dish from "../../components/dish";
-import { VictoryBar, VictoryChart, VictoryAxis } from "victory";
+import { VictoryBar, VictoryChart, VictoryAxis, VictoryPie } from "victory";
 const Wrapper = styled.div``;
 
 const Image = styled.div`
@@ -80,6 +80,19 @@ export const MyRestaurant = () => {
       },
     },
   });
+
+  const chartData = [
+    { x: 1, y: 3000 },
+    { x: 2, y: 1500 },
+    { x: 3, y: 4250 },
+    { x: 5, y: 3000 },
+    { x: 6, y: 7100 },
+    { x: 7, y: 7100 },
+    { x: 8, y: 7100 },
+    { x: 9, y: 7100 },
+    { x: 10, y: 7100 },
+  ];
+
   return (
     <Wrapper>
       <Image style={{ backgroundImage: `url(${data?.myRestaurant.restaurant?.coverImg})` }} />
@@ -107,25 +120,11 @@ export const MyRestaurant = () => {
           <SaleText>Sales</SaleText>
           <Sale>
             <VictoryChart domainPadding={20}>
-              <VictoryAxis
-                animate={{
-                  duration: 2000,
-                  easing: "bounce",
-                }}
-                dependentAxis
-                tickValues={[20, 30, 40, 50, 60]}
-              />
-
-              <VictoryAxis label='Amount of Money' />
-              <VictoryBar
-                data={[
-                  { x: 10, y: 20 },
-                  { x: 20, y: 10 },
-                  { x: 35, y: 5 },
-                  { x: 45, y: 99 },
-                ]}
-              />
+              <VictoryAxis tickFormat={(step) => `$${step / 1000}K`} dependentAxis />
+              <VictoryAxis label='Days' tickFormat={(step) => `Day ${step}`} />
+              <VictoryBar data={chartData} />
             </VictoryChart>
+            <VictoryPie data={chartData} />
           </Sale>
         </SaleWrapper>
       </Container>
