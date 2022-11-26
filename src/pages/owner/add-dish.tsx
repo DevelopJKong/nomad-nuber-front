@@ -49,6 +49,10 @@ const OptionInputSecond = styled.input`
   ${tw`py-2 px-4 focus:outline-none focus:border-gray-600 border-2`}
 `;
 
+const DeleteBtn = styled.span`
+  ${tw`cursor-pointer text-white bg-red-500 py-1 px-2 mt-5 ml-1`}
+`;
+
 const CREATE_DISH_MUTATION = gql`
   mutation createDish($input: CreateDishInput!) {
     createDish(input: $input) {
@@ -72,14 +76,14 @@ interface IForm {
 const AddDish = () => {
   const { restaurantId } = useParams<IParams>();
   const history = useHistory();
-  const [optionsNumber, setOptionsNumber] = useState(0);
+  const [optionsNumber, setOptionsNumber] = useState<number[]>([]);
 
   const onAddOptionClick = () => {
-    setOptionsNumber((current) => current + 1);
+    setOptionsNumber((current) => [Date.now(), ...current]);
   };
 
   const onDeleteClick = (index: number) => {
-    setOptionsNumber((current) => current - 1);
+    setOptionsNumber((current) => current.filter((id) => id !== index));
     setValue(`${index}-optionName`, "");
     setValue(`${index}-optionExtra`, "");
   };
@@ -101,7 +105,11 @@ const AddDish = () => {
   );
 
   const onSubmit = (data: IForm) => {
-    const { name, price, description } = data;
+    const { name, price, description, ...rest } = data;
+    const optionObjects = optionsNumber.map((theId) => ({
+      name: rest[`${theId}-optionName`],
+      extra: Number(rest[`${theId}-optionExtra`]),
+    }));
     createDishMutation({
       variables: {
         input: {
@@ -110,6 +118,7 @@ const AddDish = () => {
           price: Number(price),
           description,
           restaurantId: Number(restaurantId),
+          options: optionObjects,
         },
       },
     });
@@ -167,20 +176,21 @@ const AddDish = () => {
         <Content>
           <ContentTitle>Dish Options</ContentTitle>
           <OptionText onClick={onAddOptionClick}>Add Dish Option</OptionText>
-          {optionsNumber !== 0 &&
-            Array.from(new Array(optionsNumber)).map((_, index) => (
-              <OptionInputBox key={index}>
+          {optionsNumber.length !== 0 &&
+            optionsNumber.map((id) => (
+              <OptionInputBox key={id}>
                 <OptionInputFirst
                   type='text'
                   placeholder='Option Name'
-                  {...register(`${index}-optionName`)}
+                  {...register(`${id}-optionName`)}
                 />
                 <OptionInputSecond
                   type='number'
                   placeholder='Option Extra'
-                  {...register(`${index}-optionExtra`)}
+                  defaultValue={0}
+                  {...register(`${id}-optionExtra`)}
                 />
-                <span onClick={() => onDeleteClick(index)}>&nbsp;Delete Options</span>
+                <DeleteBtn onClick={() => onDeleteClick(id)}>Delete Options</DeleteBtn>
               </OptionInputBox>
             ))}
         </Content>
