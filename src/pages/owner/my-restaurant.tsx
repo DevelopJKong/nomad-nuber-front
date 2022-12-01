@@ -7,6 +7,8 @@ import tw from "twin.macro";
 import { myRestaurant, myRestaurantVariables } from "../../__generated__/myRestaurant";
 import Dish from "../../components/dish";
 import { VictoryBar, VictoryChart, VictoryAxis, VictoryPie } from "victory";
+import { Helmet } from "react-helmet-async";
+import { useMe } from "../../hooks/useMe";
 const Wrapper = styled.div``;
 
 const Image = styled.div`
@@ -25,8 +27,8 @@ const AddLink = styled(Link)`
   ${tw`mr-8 text-white bg-gray-800 py-3 px-10`}
 `;
 
-const PromotionLink = styled(Link)`
-  ${tw`text-white bg-lime-700 py-3 px-10`}
+const PromotionLink = styled.span`
+  ${tw`cursor-pointer text-white bg-lime-700 py-3 px-10`}
 `;
 
 const Upload = styled.div`
@@ -97,13 +99,30 @@ export const MyRestaurant = () => {
     { x: 10, y: 7100 },
   ];
 
+  const { data: userData } = useMe();
+  const triggerPaddle = () => {
+    if(userData?.me.email) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.Paddle.Setup({ vendor: 161391 });
+
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    window.Paddle.Setup({ product: 12345, email: userData.me.email });
+  }
+  };
+
   return (
     <Wrapper>
+      <Helmet>
+        <title>{data?.myRestaurant.restaurant?.name || "Loading..."} | Nuber Eats</title>
+        <script src='https://cdn.paddle.com/paddle/paddle.js'></script>
+      </Helmet>
       <Image style={{ backgroundImage: `url(${data?.myRestaurant.restaurant?.coverImg})` }} />
       <Container>
         <Title>{data?.myRestaurant.restaurant?.name || "Loading..."}</Title>
         <AddLink to={`/restaurants/${id}/add-dish`}>Add Dish &rarr;</AddLink>
-        <PromotionLink to={""}>Buy Promotion</PromotionLink>
+        <PromotionLink onClick={triggerPaddle}>Buy Promotion</PromotionLink>
         <Upload>
           {data?.myRestaurant.restaurant?.menu.length === 0 ? (
             <UploadText>Please upload a dish</UploadText>
@@ -120,17 +139,6 @@ export const MyRestaurant = () => {
             </DishWrapper>
           )}
         </Upload>
-        <SaleWrapper>
-          <SaleText>Sales</SaleText>
-          <Sale>
-            <VictoryChart domainPadding={20}>
-              <VictoryAxis tickFormat={(step) => `$${step / 1000}K`} dependentAxis />
-              <VictoryAxis label='Days' tickFormat={(step) => `Day ${step}`} />
-              <VictoryBar data={chartData} />
-            </VictoryChart>
-            <VictoryPie data={chartData} />
-          </Sale>
-        </SaleWrapper>
       </Container>
     </Wrapper>
   );
