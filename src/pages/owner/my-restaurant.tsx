@@ -1,5 +1,5 @@
 import React from "react";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { Link, useParams } from "react-router-dom";
 import { DISH_FRAGMENT, ORDERS_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
 import styled from "styled-components";
@@ -9,6 +9,7 @@ import Dish from "../../components/dish";
 import { VictoryBar, VictoryChart, VictoryAxis, VictoryPie } from "victory";
 import { Helmet } from "react-helmet-async";
 import { useMe } from "../../hooks/useMe";
+import { createPayment, createPaymentVariables } from "../../__generated__/createPayment";
 const Wrapper = styled.div``;
 
 const Image = styled.div`
@@ -74,6 +75,15 @@ export const MY_RESTAURANT_QUERY = gql`
   ${ORDERS_FRAGMENT}
 `;
 
+const CREATE_PAYMENT_MUTATION = gql`
+  mutation createPayment($input: CreatePaymentInput!) {
+    createPayment(input: $input) {
+      ok
+      error
+    }
+  }
+`;
+
 interface IParams {
   id: string;
 }
@@ -86,30 +96,45 @@ export const MyRestaurant = () => {
       },
     },
   });
-
-  const chartData = [
-    { x: 1, y: 3000 },
-    { x: 2, y: 1500 },
-    { x: 3, y: 4250 },
-    { x: 5, y: 3000 },
-    { x: 6, y: 7100 },
-    { x: 7, y: 7100 },
-    { x: 8, y: 7100 },
-    { x: 9, y: 7100 },
-    { x: 10, y: 7100 },
-  ];
-
+  const onCompleted = (data: createPayment) => {
+    if (data.createPayment.ok) {
+      alert("Your restaurant is being promoted!");
+    }
+  };
+  const [createPaymentMutation, { loading }] = useMutation<createPayment, createPaymentVariables>(
+    CREATE_PAYMENT_MUTATION,
+    {
+      onCompleted,
+    },
+  );
   const { data: userData } = useMe();
   const triggerPaddle = () => {
-    if(userData?.me.email) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    window.Paddle.Setup({ vendor: 161391 });
+    if (userData?.me.email) {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.Paddle.Setup({ vendor: 161391 });
 
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    window.Paddle.Setup({ product: 12345, email: userData.me.email });
-  }
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.Paddle.Setup({ product: 12345, email: userData.me.email });
+
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      window.Paddle.Checkout.open({
+        product: 638793,
+        email: userData.me.email,
+        successCallback: (data: any) => {
+          createPaymentMutation({
+            variables: {
+              input: {
+                transactionId: data.checkout.id,
+                restaurantId: Number(id),
+              },
+            },
+          });
+        },
+      });
+    }
   };
 
   return (
