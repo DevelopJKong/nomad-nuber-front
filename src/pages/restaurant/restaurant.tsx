@@ -2,9 +2,10 @@ import React from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
-import { RESTAURANT_FRAGMENT } from "../../fragments";
+import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
 import { restaurant, restaurantVariables } from "../../__generated__/restaurant";
 import tw from "twin.macro";
+import Dish from "../../components/dish";
 
 const Container = styled.div``;
 
@@ -28,6 +29,10 @@ const Address = styled.h6`
   ${tw`text-sm font-light`}
 `;
 
+const DishWrapper = styled.div`
+  ${tw`grid my-16 md:grid-cols-3 gap-x-5 gap-y-10`}
+`;
+
 const RESTAURANT_QUERY = gql`
   query restaurant($input: RestaurantInput!) {
     restaurant(input: $input) {
@@ -35,10 +40,14 @@ const RESTAURANT_QUERY = gql`
       error
       restaurant {
         ...RestaurantParts
+        menu {
+          ...DishParts
+        }
       }
     }
   }
   ${RESTAURANT_FRAGMENT}
+  ${DISH_FRAGMENT}
 `;
 
 interface IRestaurantParams {
@@ -61,6 +70,18 @@ const Restaurant = () => {
         <Title>{data?.restaurant.restaurant?.name}</Title>
         <CategoryName>{data?.restaurant.restaurant?.category?.name}</CategoryName>
       </Content>
+      <DishWrapper>
+        {data?.restaurant.restaurant?.menu.map((dish, index) => (
+          <Dish
+            key={index}
+            name={dish.name}
+            description={dish.description}
+            price={dish.price}
+            isCustomer={true}
+            options={dish.options}
+          />
+        ))}
+      </DishWrapper>
     </Container>
   );
 };
