@@ -35,16 +35,28 @@ const OptionExtra = styled.p`
 `;
 
 interface IDishProps {
+  id?: number;
   description: string;
   name: string;
   price: number;
   isCustomer?: boolean;
+  orderStarted?: boolean;
   options?: restaurant_restaurant_restaurant_menu_options[] | null;
+  addItemToOrder?: (dishId: number) => void;
 }
 
-const Dish: React.FC<IDishProps> = ({ description, name, price, isCustomer = false, options }) => {
+const Dish: React.FC<IDishProps> = ({
+  id = 0,
+  description,
+  name,
+  price,
+  isCustomer = false,
+  orderStarted = false,
+  options,
+  addItemToOrder,
+}) => {
   return (
-    <Container>
+    <Container onClick={() => (orderStarted && addItemToOrder ? addItemToOrder(id) : null)}>
       <Content>
         <Name>{name}</Name>
         <Description>{description}</Description>

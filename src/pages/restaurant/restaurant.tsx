@@ -1,11 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
-import { restaurant, restaurantVariables } from "../../__generated__/restaurant";
 import tw from "twin.macro";
 import Dish from "../../components/dish";
+import { restaurant, restaurantVariables } from "../../__generated__/restaurant";
+import { CreateOrderItemInput } from "../../__generated__/globalTypes";
 
 const Container = styled.div``;
 
@@ -30,7 +31,15 @@ const Address = styled.h6`
 `;
 
 const DishWrapper = styled.div`
-  ${tw`grid my-16 md:grid-cols-3 gap-x-5 gap-y-10`}
+  ${tw`container`}
+`;
+
+const DishGrid = styled.div`
+  ${tw`w-full grid my-16 md:grid-cols-3 gap-x-5 gap-y-10`}
+`;
+
+const DishBtn = styled.button`
+  ${tw`text-lg font-medium focus:outline-none text-white py-4  transition-colors bg-lime-600 hover:bg-lime-700`}
 `;
 
 const RESTAURANT_QUERY = gql`
@@ -50,6 +59,15 @@ const RESTAURANT_QUERY = gql`
   ${DISH_FRAGMENT}
 `;
 
+const CREATE_ORDER_MUTATION = gql`
+  mutation createOrder($input: CreateOrderInput!) {
+    createOrder(input: $input) {
+      ok
+      error
+    }
+  }
+`;
+
 interface IRestaurantParams {
   id: string;
 }
@@ -63,6 +81,17 @@ const Restaurant = () => {
       },
     },
   });
+  const [orderStarted, setOrderStarted] = useState(false);
+  const [orderItems, setOrderItems] = useState<CreateOrderItemInput[]>([]);
+
+  const triggerStartOrder = () => {
+    setOrderStarted(true);
+  };
+
+  const addItemToOrder = (dishId: number) => {
+    setOrderItems((current) => [{ dishId }]);
+  };
+
   return (
     <Container>
       <Header style={{ backgroundColor: `url(${data?.restaurant.restaurant?.coverImg})` }}></Header>
@@ -71,16 +100,22 @@ const Restaurant = () => {
         <CategoryName>{data?.restaurant.restaurant?.category?.name}</CategoryName>
       </Content>
       <DishWrapper>
-        {data?.restaurant.restaurant?.menu.map((dish, index) => (
-          <Dish
-            key={index}
-            name={dish.name}
-            description={dish.description}
-            price={dish.price}
-            isCustomer={true}
-            options={dish.options}
-          />
-        ))}
+        <DishBtn onClick={triggerStartOrder}>Start Order</DishBtn>
+        <DishGrid>
+          {data?.restaurant.restaurant?.menu.map((dish, index) => (
+            <Dish
+              id={dish.id}
+              orderStarted={orderStarted}
+              key={index}
+              name={dish.name}
+              description={dish.description}
+              price={dish.price}
+              isCustomer={true}
+              options={dish.options}
+              addItemToOrder={addItemToOrder}
+            />
+          ))}
+        </DishGrid>
       </DishWrapper>
     </Container>
   );
