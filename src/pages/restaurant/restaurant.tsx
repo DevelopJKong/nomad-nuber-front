@@ -144,11 +144,12 @@ const Restaurant = () => {
   const getOptionFromItem = (item: CreateOrderItemInput, optionName: string) => {
     return item.options?.find((option) => option.name === optionName);
   };
-  const isOptionSelected = (dishId: number, optionName: string): boolean | void => {
+  const isOptionSelected = (dishId: number, optionName: string): boolean => {
     const item = getItem(dishId);
     if (item) {
       return Boolean(getOptionFromItem(item, optionName));
     }
+    return false;
   };
 
   return (
@@ -185,7 +186,7 @@ const Restaurant = () => {
                       : null
                   }
                   key={index}
-                  getOptionFromItem={getOptionFromItem(dish.id, option.name)}
+                  getOptionFromItem={isOptionSelected(dish.id, option.name)}
                 >
                   <OptionName>{option.name}</OptionName>
                   <OptionExtra>(${option.extra})</OptionExtra>
