@@ -88,8 +88,18 @@ const Restaurant = () => {
     setOrderStarted(true);
   };
 
+  const isSelected = (dishId: number) => {
+    return Boolean(orderItems.find((order) => order.dishId === dishId));
+  };
   const addItemToOrder = (dishId: number) => {
-    setOrderItems((current) => [{ dishId }]);
+    if (orderItems.find((order) => order.dishId === dishId)) {
+      return;
+    }
+    setOrderItems((current) => [{ dishId }, ...current]);
+  };
+
+  const removeFromOrder = (dishId: number) => {
+    setOrderItems((current) => current.filter((dish) => dish.dishId !== dishId));
   };
 
   return (
@@ -100,10 +110,11 @@ const Restaurant = () => {
         <CategoryName>{data?.restaurant.restaurant?.category?.name}</CategoryName>
       </Content>
       <DishWrapper>
-        <DishBtn onClick={triggerStartOrder}>Start Order</DishBtn>
+        <DishBtn onClick={triggerStartOrder}>{orderStarted ? "Ordering" : "Start Order"}</DishBtn>
         <DishGrid>
           {data?.restaurant.restaurant?.menu.map((dish, index) => (
             <Dish
+              isSelected={isSelected(dish.id)}
               id={dish.id}
               orderStarted={orderStarted}
               key={index}
@@ -113,6 +124,7 @@ const Restaurant = () => {
               isCustomer={true}
               options={dish.options}
               addItemToOrder={addItemToOrder}
+              removeFromOrder={removeFromOrder}
             />
           ))}
         </DishGrid>
