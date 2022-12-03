@@ -30,18 +30,6 @@ const DishTitle = styled.h5`
   ${tw`mt-5 mb-3 font-medium`}
 `;
 
-const Option = styled.span`
-  ${tw`flex border items-center`}
-`;
-
-const OptionName = styled.p`
-  ${tw`mr-2`}
-`;
-
-const OptionExtra = styled.p`
-  ${tw`text-sm opacity-75`}
-`;
-
 interface IDishProps {
   id?: number;
   isSelected?: boolean;
@@ -54,6 +42,7 @@ interface IDishProps {
   addItemToOrder?: (dishId: number) => void;
   removeFromOrder?: (dishId: number) => void;
   addOptionToItem?: (dishId: number, options: any) => void;
+  children?: React.ReactNode;
 }
 
 const Dish: React.FC<IDishProps> = ({
@@ -67,7 +56,7 @@ const Dish: React.FC<IDishProps> = ({
   addItemToOrder,
   isSelected = false,
   removeFromOrder,
-  addOptionToItem,
+  children: dishOptions,
 }) => {
   const onClick = () => {
     if (orderStarted) {
@@ -94,21 +83,7 @@ const Dish: React.FC<IDishProps> = ({
       {isCustomer && options && options?.length !== 0 && (
         <div>
           <DishTitle>Dish Options:</DishTitle>
-          {options?.map((option, index) => (
-            <Option
-              onClick={() =>
-                addOptionToItem
-                  ? addOptionToItem(id, {
-                      name: option.name,
-                    })
-                  : null
-              }
-              key={index}
-            >
-              <OptionName>{option.name}</OptionName>
-              <OptionExtra>(${option.extra})</OptionExtra>
-            </Option>
-          ))}
+          {dishOptions}
         </div>
       )}
     </Container>
