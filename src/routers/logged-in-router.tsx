@@ -53,7 +53,7 @@ const commonRoutes = [
     component: <EditProfile />,
   },
   {
-    path: "/orders:id",
+    path: "/orders/:id",
     component: <Order />,
   },
 ];

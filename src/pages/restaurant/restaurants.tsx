@@ -133,15 +133,15 @@ const Restaurants = () => {
           <CategoryContainer>
             <CategoryGrid>
               {data?.allCategories.categories?.map((category, index) => (
-                <>
+                <div key={index}>
                   <Link to={`/category/${category.slug}`} />
-                  <Categories key={index}>
+                  <Categories>
                     <Category style={{ backgroundImage: `url(${category.coverImg})` }}>
                       {category.name}
                     </Category>
                     <Text>{category.name}</Text>
                   </Categories>
-                </>
+                </div>
               ))}
             </CategoryGrid>
           </CategoryContainer>

@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { gql, useQuery, useSubscription } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import tw from "twin.macro";
@@ -8,7 +8,7 @@ import { FULL_ORDER_FRAGMENT } from "../fragments";
 import { getOrder, getOrderVariables } from "../__generated__/getOrder";
 
 const Container = styled.div`
-  ${tw`mt-32 container flex justify-center`}
+  ${tw`mt-3 container flex justify-center`}
 `;
 
 const Content = styled.div`
@@ -52,6 +52,15 @@ const GET_ORDER = gql`
   ${FULL_ORDER_FRAGMENT}
 `;
 
+const ORDER_SUBSCRIPTION = gql`
+  subscription orderUpdates($input: OrderUpdatesInput!) {
+    orderUpdates(input: $input) {
+      ...FullOrderParts
+    }
+  }
+  ${FULL_ORDER_FRAGMENT}
+`;
+
 interface IParams {
   id: string;
 }
@@ -65,32 +74,31 @@ const Order = () => {
       },
     },
   });
-  // useEffect(() => {
-  //   if (data?.getOrder.ok) {
-  //     subscribeToMore({
-  //       document: ORDER_SUBSCRIPTION,
-  //       variables: {
-  //         input: {
-  //           id: +params.id,
-  //         },
-  //       },
-  //       updateQuery: (
-  //         prev,
-  //         { subscriptionData: { data } }: { subscriptionData: { data: orderUpdates } },
-  //       ) => {
-  //         if (!data) return prev;
-  //         return {
-  //           getOrder: {
-  //             ...prev.getOrder,
-  //             order: {
-  //               ...data.orderUpdates,
-  //             },
-  //           },
-  //         };
-  //       },
-  //     });
-  //   }
-  // }, [data]);
+  useEffect(() => {
+    if (data?.getOrder.ok) {
+      subscribeToMore({
+        document: ORDER_SUBSCRIPTION,
+        variables: {
+          input: {
+            id: Number(params.id),
+          },
+        },
+        updateQuery: (prev, { subscriptionData: { data } }: any) => {
+          // TODO 타입 해결하기
+          if (!data) return prev;
+          return {
+            getOrder: {
+              ...prev.getOrder,
+              order: {
+                ...data.orderUpdates,
+              },
+            },
+          };
+        },
+      });
+    }
+  }, [data]);
+
   return (
     <Container>
       <Helmet>

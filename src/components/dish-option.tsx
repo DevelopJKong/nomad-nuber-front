@@ -2,10 +2,9 @@ import React from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 
-const Option = styled.span.attrs(() => {
+const Option = styled.span.attrs<{ getOptionFromItem: boolean }>(({ getOptionFromItem }) => {
   return {
-    className: `${({ getOptionFromItem }: { getOptionFromItem: boolean }) =>
-      getOptionFromItem ? "border-gray-800" : "hover:border-gray-800"}`,
+    className: getOptionFromItem ? "border-gray-800" : "hover:border-gray-800",
   };
 })<{ getOptionFromItem: boolean }>`
   ${tw`border px-2 py-1`}

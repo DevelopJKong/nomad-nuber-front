@@ -13,11 +13,11 @@ import { createOrder, createOrderVariables } from "../../__generated__/createOrd
 const Container = styled.div``;
 
 const Header = styled.div`
-  ${tw`bg-red-500 bg-center bg-cover py-48`}
+  ${tw`bg-center bg-cover py-48`}
 `;
 
 const Content = styled.div`
-  ${tw`bg-white w-3/12 py-4 pl-48`}
+  ${tw`bg-white w-3/12 py-4 pl-4`}
 `;
 
 const Title = styled.h4`
@@ -41,7 +41,7 @@ const DishGrid = styled.div`
 `;
 
 const DishBtn = styled.button`
-  ${tw`text-lg font-medium focus:outline-none text-white py-4  transition-colors bg-lime-600 hover:bg-lime-700`}
+  ${tw`text-lg font-medium focus:outline-none text-white px-7 py-5  ml-2 mr-2 transition-colors bg-lime-600 hover:bg-lime-700`}
 `;
 
 const BtnWrapper = styled.div`
@@ -210,7 +210,7 @@ const Restaurant = () => {
 
   return (
     <Container>
-      <Header style={{ backgroundColor: `url(${data?.restaurant.restaurant?.coverImg})` }}></Header>
+      <Header style={{ backgroundImage: `url(${data?.restaurant.restaurant?.coverImg})` }}></Header>
       <Content>
         <Title>{data?.restaurant.restaurant?.name}</Title>
         <CategoryName>{data?.restaurant.restaurant?.category?.name}</CategoryName>

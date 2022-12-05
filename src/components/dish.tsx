@@ -3,10 +3,9 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { restaurant_restaurant_restaurant_menu_options } from "../__generated__/restaurant";
 
-const Container = styled.div.attrs(() => {
+const Container = styled.div.attrs<{ isSelected: boolean }>(({ isSelected }) => {
   return {
-    className: `${({ isSelected }: { isSelected: boolean }) =>
-      isSelected ? "border-gray-800" : " hover:border-gray-800"}`,
+    className: isSelected ? "border-gray-800" : " hover:border-gray-800",
   };
 })<{ isSelected: boolean }>`
   ${tw`px-8 pt-3 pb-8 border hover:border-gray-800 transition-all`}
@@ -20,10 +19,9 @@ const Name = styled.h3`
   ${tw`text-lg font-medium flex items-center`}
 `;
 
-const Button = styled.button.attrs(() => {
+const Button = styled.button.attrs<{ isSelected: boolean }>(({ isSelected }) => {
   return {
-    className: `${({ isSelected }: { isSelected: boolean }) =>
-      isSelected ? "bg-red-500" : " bg-lime-600"}`,
+    className: isSelected ? "bg-red-500" : "bg-lime-500",
   };
 })<{ isSelected: boolean }>`
   ${tw`ml-3 py-1 px-3 focus:outline-none text-sm text-white`}
