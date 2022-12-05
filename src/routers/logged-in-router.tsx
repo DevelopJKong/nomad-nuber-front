@@ -14,6 +14,7 @@ import { MyRestaurants } from "../pages/owner/my-restaurants";
 import AddRestaurants from "../pages/owner/add-restaurants";
 import { MyRestaurant } from "../pages/owner/my-restaurant";
 import AddDish from "../pages/owner/add-dish";
+import Order from "../pages/order";
 
 const Loading = styled.div`
   ${tw`h-screen flex justify-center items-center`}
@@ -50,6 +51,10 @@ const commonRoutes = [
   {
     path: "/edit-profile",
     component: <EditProfile />,
+  },
+  {
+    path: "/orders:id",
+    component: <Order />,
   },
 ];
 
