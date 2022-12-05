@@ -17,7 +17,16 @@ const Content = styled.div`
 `;
 
 const Name = styled.h3`
-  ${tw`text-lg font-medium mb-5`}
+  ${tw`text-lg font-medium flex items-center`}
+`;
+
+const Button = styled.button.attrs(() => {
+  return {
+    className: `${({ isSelected }: { isSelected: boolean }) =>
+      isSelected ? "bg-red-500" : " bg-lime-600"}`,
+  };
+})<{ isSelected: boolean }>`
+  ${tw`ml-3 py-1 px-3 focus:outline-none text-sm text-white`}
 `;
 
 const Description = styled.h4`
@@ -28,6 +37,10 @@ const Price = styled(Description)``;
 
 const DishTitle = styled.h5`
   ${tw`mt-5 mb-3 font-medium`}
+`;
+
+const DishOptions = styled.div`
+  ${tw`grid gap-2 justify-start`}
 `;
 
 interface IDishProps {
@@ -74,7 +87,11 @@ const Dish: React.FC<IDishProps> = ({
       <Content>
         <Name>
           {name}
-          {orderStarted && <button onClick={onClick}>{isSelected ? "Remove" : "Add"}</button>}
+          {orderStarted && (
+            <Button isSelected={isSelected} onClick={onClick}>
+              {isSelected ? "Remove" : "Add"}
+            </Button>
+          )}
         </Name>
         <Description>{description}</Description>
       </Content>
@@ -83,7 +100,7 @@ const Dish: React.FC<IDishProps> = ({
       {isCustomer && options && options?.length !== 0 && (
         <div>
           <DishTitle>Dish Options:</DishTitle>
-          {dishOptions}
+          <DishOptions>{dishOptions}</DishOptions>
         </div>
       )}
     </Container>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { gql, useQuery } from "@apollo/client";
-import { useParams } from "react-router-dom";
+import { gql, useMutation, useQuery } from "@apollo/client";
+import { useHistory, useParams } from "react-router-dom";
 import styled from "styled-components";
 import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
 import tw from "twin.macro";
@@ -8,6 +8,7 @@ import Dish from "../../components/dish";
 import { restaurant, restaurantVariables } from "../../__generated__/restaurant";
 import { CreateOrderItemInput } from "../../__generated__/globalTypes";
 import DishOption from "../../components/dish-option";
+import { createOrder, createOrderVariables } from "../../__generated__/createOrder";
 
 const Container = styled.div``;
 
@@ -43,6 +44,14 @@ const DishBtn = styled.button`
   ${tw`text-lg font-medium focus:outline-none text-white py-4  transition-colors bg-lime-600 hover:bg-lime-700`}
 `;
 
+const BtnWrapper = styled.div`
+  ${tw`flex items-center`}
+`;
+const CancelBtn = styled(DishBtn)`
+  ${tw`px-10 bg-black hover:bg-black mr-3`}
+`;
+const ConfirmBtn = styled(DishBtn)``;
+
 const RESTAURANT_QUERY = gql`
   query restaurant($input: RestaurantInput!) {
     restaurant(input: $input) {
@@ -65,6 +74,7 @@ const CREATE_ORDER_MUTATION = gql`
     createOrder(input: $input) {
       ok
       error
+      orderId
     }
   }
 `;
@@ -75,6 +85,7 @@ interface IRestaurantParams {
 
 const Restaurant = () => {
   const params = useParams<IRestaurantParams>();
+  const history = useHistory();
   const { loading, data } = useQuery<restaurant, restaurantVariables>(RESTAURANT_QUERY, {
     variables: {
       input: {
@@ -156,6 +167,43 @@ const Restaurant = () => {
     }
   };
 
+  const triggerCancelOrder = () => {
+    setOrderStarted(false);
+    setOrderItems([]);
+  };
+  const onCompleted = (data: createOrder) => {
+    const {
+      createOrder: { ok,orderId },
+    } = data;
+    if (data.createOrder.ok) {
+      history.push(`/orders/${orderId}`);
+    }
+  };
+  const [createOrderMutation, { loading: placingOrder }] = useMutation<
+    createOrder,
+    createOrderVariables
+  >(CREATE_ORDER_MUTATION, {
+    onCompleted,
+  });
+
+  const triggerConfirmOrder = () => {
+    if (orderItems.length === 0) {
+      alert("Can't place empty order");
+      return;
+    }
+    const ok = window.confirm("You are about to place an order");
+    if (ok) {
+      createOrderMutation({
+        variables: {
+          input: {
+            restaurantId: Number(params.id),
+            items: orderItems,
+          },
+        },
+      });
+    }
+  };
+
   return (
     <Container>
       <Header style={{ backgroundColor: `url(${data?.restaurant.restaurant?.coverImg})` }}></Header>
@@ -164,7 +212,14 @@ const Restaurant = () => {
         <CategoryName>{data?.restaurant.restaurant?.category?.name}</CategoryName>
       </Content>
       <DishWrapper>
-        <DishBtn onClick={triggerStartOrder}>{orderStarted ? "Ordering" : "Start Order"}</DishBtn>
+        {!orderStarted && <DishBtn onClick={triggerStartOrder}>Start Order</DishBtn>}
+        {orderStarted && (
+          <BtnWrapper>
+            <ConfirmBtn onClick={triggerConfirmOrder}>Confirm Order</ConfirmBtn>
+            <CancelBtn onClick={triggerCancelOrder}>Cancel Order</CancelBtn>
+          </BtnWrapper>
+        )}
+
         <DishGrid>
           {data?.restaurant.restaurant?.menu.map((dish, index) => (
             <Dish

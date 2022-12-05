@@ -5,17 +5,17 @@ import tw from "twin.macro";
 const Option = styled.span.attrs(() => {
   return {
     className: `${({ getOptionFromItem }: { getOptionFromItem: boolean }) =>
-      getOptionFromItem ? "border-gray-800" : ""}`,
+      getOptionFromItem ? "border-gray-800" : "hover:border-gray-800"}`,
   };
 })<{ getOptionFromItem: boolean }>`
-  ${tw`flex border items-center`}
+  ${tw`border px-2 py-1`}
 `;
 
-const OptionName = styled.p`
+const OptionName = styled.span`
   ${tw`mr-2`}
 `;
 
-const OptionExtra = styled.p`
+const OptionExtra = styled.span`
   ${tw`text-sm opacity-75`}
 `;
 
