@@ -6,6 +6,7 @@ import tw from "twin.macro";
 import { Helmet } from "react-helmet-async";
 import { FULL_ORDER_FRAGMENT } from "../fragments";
 import { getOrder, getOrderVariables } from "../__generated__/getOrder";
+import { orderUpdates } from "../__generated__/orderUpdates";
 
 const Container = styled.div`
   ${tw`mt-3 container flex justify-center`}
@@ -83,7 +84,10 @@ const Order = () => {
             id: Number(params.id),
           },
         },
-        updateQuery: (prev, { subscriptionData: { data } }: any) => {
+        updateQuery: (
+          prev,
+          { subscriptionData: { data } }: { subscriptionData: { data: orderUpdates } },
+        ) => {
           // TODO 타입 해결하기
           if (!data) return prev;
           return {
@@ -98,7 +102,7 @@ const Order = () => {
       });
     }
   }, [data]);
-
+  console.log(data);
   return (
     <Container>
       <Helmet>

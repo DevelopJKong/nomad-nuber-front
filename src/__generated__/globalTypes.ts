@@ -98,6 +98,10 @@ export interface OrderItemOptionInpuType {
   extra?: number | null;
 }
 
+export interface OrderUpdatesInput {
+  id: number;
+}
+
 export interface RestaurantInput {
   restaurantId: number;
 }
