@@ -7,6 +7,7 @@ import { Helmet } from "react-helmet-async";
 import { FULL_ORDER_FRAGMENT } from "../fragments";
 import { getOrder, getOrderVariables } from "../__generated__/getOrder";
 import { orderUpdates } from "../__generated__/orderUpdates";
+import { useMe } from "../hooks/useMe";
 
 const Container = styled.div`
   ${tw`mt-3 container flex justify-center`}
@@ -68,6 +69,7 @@ interface IParams {
 
 const Order = () => {
   const params = useParams<IParams>();
+  const { data: userData } = useMe();
   const { data, subscribeToMore } = useQuery<getOrder, getOrderVariables>(GET_ORDER, {
     variables: {
       input: {
@@ -84,17 +86,17 @@ const Order = () => {
             id: Number(params.id),
           },
         },
+
         updateQuery: (
           prev,
-          { subscriptionData: { data } }: { subscriptionData: { data: orderUpdates } },
+          { subscriptionData: { data: updateData } }: { subscriptionData: { data: orderUpdates } },
         ) => {
-          // TODO 타입 해결하기
-          if (!data) return prev;
+          if (!updateData) return prev;
           return {
             getOrder: {
               ...prev.getOrder,
               order: {
-                ...data.orderUpdates,
+                ...updateData.orderUpdates,
               },
             },
           };
@@ -102,7 +104,6 @@ const Order = () => {
       });
     }
   }, [data]);
-  console.log(data);
   return (
     <Container>
       <Helmet>
@@ -121,7 +122,15 @@ const Order = () => {
           <Row>
             Driver: <RowText>{data?.getOrder.order?.driver?.email || "Not yet."}</RowText>
           </Row>
-          <Status>Status: {data?.getOrder.order?.status}</Status>
+          {userData?.me.role === "Client" && (
+            <Status>Status: {data?.getOrder.order?.status}</Status>
+          )}
+          {userData?.me.role === "Owner" && (
+            <>
+              {data?.getOrder.order?.status === "Pending" && <button>Accept Order</button>}
+              {data?.getOrder.order?.status === "Pending" && <button>Accept Order</button>}
+            </>
+          )}
         </Table>
       </Content>
     </Container>
