@@ -15,104 +15,82 @@ import AddRestaurants from "../pages/owner/add-restaurants";
 import { MyRestaurant } from "../pages/owner/my-restaurant";
 import AddDish from "../pages/owner/add-dish";
 import Order from "../pages/order";
+import Dashboard from "../pages/driver/dashboard";
+import { UserRole } from "../__generated__/globalTypes";
 
 const Loading = styled.div`
-  ${tw`h-screen flex justify-center items-center`}
+   ${tw`h-screen flex justify-center items-center`}
 `;
 
 const LoadingText = styled.span`
-  ${tw`font-medium text-xl tracking-wide`}
+   ${tw`font-medium text-xl tracking-wide`}
 `;
 
 const clientRoutes = [
-  {
-    path: "/",
-    component: <Restaurants />,
-  },
-  {
-    path: "/search",
-    component: <Search />,
-  },
-  {
-    path: "/category/:slug",
-    component: <Category />,
-  },
-  {
-    path: "/restaurants/:id",
-    component: <Restaurant />,
-  },
+   { path: "/", component: <Restaurants /> },
+   { path: "/search", component: <Search /> },
+   { path: "/category/:slug", component: <Category /> },
+   { path: "/restaurants/:id", component: <Restaurant /> },
 ];
 
 const commonRoutes = [
-  {
-    path: "/confirm",
-    component: <ConfirmEmail />,
-  },
-  {
-    path: "/edit-profile",
-    component: <EditProfile />,
-  },
-  {
-    path: "/orders/:id",
-    component: <Order />,
-  },
+   { path: "/confirm", component: <ConfirmEmail /> },
+   { path: "/edit-profile", component: <EditProfile /> },
+   { path: "/orders/:id", component: <Order /> },
 ];
 
 const restaurantRoutes = [
-  {
-    path: "/",
-    component: <MyRestaurants />,
-  },
-  {
-    path: "/add-restaurant",
-    component: <AddRestaurants />,
-  },
-  {
-    path: "/restaurants/:id",
-    component: <MyRestaurant />,
-  },
-  {
-    path: "/restaurants/:restaurantId/add-dish",
-    component: <AddDish />,
-  },
+   { path: "/", component: <MyRestaurants /> },
+   { path: "/add-restaurant", component: <AddRestaurants /> },
+   { path: "/restaurants/:id", component: <MyRestaurant /> },
+   { path: "/restaurants/:restaurantId/add-dish", component: <AddDish /> },
 ];
 
+const driversRouter = [{ path: "/", component: <Dashboard /> }];
+
 const LoggedInRouter = () => {
-  const { data, loading, error } = useMe();
-  if (!data || loading || error) {
-    return (
-      <Loading>
-        <LoadingText>Loading...</LoadingText>
-      </Loading>
-    );
-  }
-  return (
-    <Router>
-      <Header />
-      <Switch>
-        {data.me.role === "Client" &&
-          clientRoutes.map((route) => (
-            <Route exact key={route.path} path={route.path}>
-              {route.component}
+   const { data, loading, error } = useMe();
+   if (!data || loading || error) {
+      return (
+         <Loading>
+            <LoadingText>Loading...</LoadingText>
+         </Loading>
+      );
+   }
+   return (
+      <Router>
+         <Header />
+         <Switch>
+            {data.me.role === UserRole.Client &&
+               clientRoutes.map((route) => (
+                  <Route exact key={route.path} path={route.path}>
+                     {route.component}
+                  </Route>
+               ))}
+            {data.me.role === UserRole.Delivery &&
+               driversRouter.map((route) => (
+                  <Route exact key={route.path} path={route.path}>
+                     {route.component}
+                  </Route>
+               ))}
+
+            {data.me.role === UserRole.Owner &&
+               restaurantRoutes.map((route) => (
+                  <Route exact key={route.path} path={route.path}>
+                     {route.component}
+                  </Route>
+               ))}
+            {commonRoutes.map((route) => (
+               <Route exact key={route.path} path={route.path}>
+                  {route.component}
+               </Route>
+            ))}
+            <Route path='*'>
+               <NotFound />
             </Route>
-          ))}
-        {commonRoutes.map((route) => (
-          <Route exact key={route.path} path={route.path}>
-            {route.component}
-          </Route>
-        ))}
-        {data.me.role === "Owner" &&
-          restaurantRoutes.map((route) => (
-            <Route exact key={route.path} path={route.path}>
-              {route.component}
-            </Route>
-          ))}
-        <Route path='*'>
-          <NotFound />
-        </Route>
-      </Switch>
-    </Router>
-  );
+         </Switch>
+      </Router>
+   );
 };
 
 export default LoggedInRouter;

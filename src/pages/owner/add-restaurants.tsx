@@ -7,10 +7,10 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { Button } from "../../components/button";
 import { FormError } from "../../components/form-error";
-import { createRestaurant, createRestaurantVariables } from "../../__generated__/createRestaurant";
 import { Input as LoginInput } from "../login";
 import { MY_RESTAURANTS_QUERY } from "./my-restaurants";
 import { useHistory } from "react-router-dom";
+import { createRestaurant, createRestaurantVariables } from "../../__generated__/createRestaurant";
 
 const Container = styled.div`
   ${tw`container flex flex-col items-center mt-10`}
