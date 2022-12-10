@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { gql, useQuery } from "@apollo/client";
+import { gql, useMutation, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import tw from "twin.macro";
@@ -8,6 +8,8 @@ import { FULL_ORDER_FRAGMENT } from "../fragments";
 import { getOrder, getOrderVariables } from "../__generated__/getOrder";
 import { orderUpdates } from "../__generated__/orderUpdates";
 import { useMe } from "../hooks/useMe";
+import { editOrder, editOrderVariables } from "../__generated__/editOrder";
+import { OrderStatus, UserRole } from "../__generated__/globalTypes";
 
 const Container = styled.div`
   ${tw`mt-3 container flex justify-center`}
@@ -63,6 +65,14 @@ const ORDER_SUBSCRIPTION = gql`
   ${FULL_ORDER_FRAGMENT}
 `;
 
+const EDIT_ORDER = gql`
+  mutation editOrder($input: EditOrderInput!) {
+    editOrder(input: $input) {
+      ok
+      error
+    }
+  }
+`;
 interface IParams {
   id: string;
 }
@@ -70,6 +80,7 @@ interface IParams {
 const Order = () => {
   const params = useParams<IParams>();
   const { data: userData } = useMe();
+  const [editOrderMutation] = useMutation<editOrder, editOrderVariables>(EDIT_ORDER);
   const { data, subscribeToMore } = useQuery<getOrder, getOrderVariables>(GET_ORDER, {
     variables: {
       input: {
@@ -104,6 +115,18 @@ const Order = () => {
       });
     }
   }, [data]);
+
+  const onButtonClick = (newStatus: OrderStatus) => {
+    editOrderMutation({
+      variables: {
+        input: {
+          id: Number(params.id),
+          status: newStatus,
+        },
+      },
+    });
+  };
+
   return (
     <Container>
       <Helmet>
@@ -122,13 +145,21 @@ const Order = () => {
           <Row>
             Driver: <RowText>{data?.getOrder.order?.driver?.email || "Not yet."}</RowText>
           </Row>
-          {userData?.me.role === "Client" && (
+          {userData?.me.role === UserRole.Client && (
             <Status>Status: {data?.getOrder.order?.status}</Status>
           )}
-          {userData?.me.role === "Owner" && (
+          {userData?.me.role === UserRole.Owner && (
             <>
-              {data?.getOrder.order?.status === "Pending" && <button>Accept Order</button>}
-              {data?.getOrder.order?.status === "Pending" && <button>Accept Order</button>}
+              {data?.getOrder.order?.status === OrderStatus.Pending && (
+                <button onClick={() => onButtonClick(OrderStatus.Cooking)}>Accept Order</button>
+              )}
+              {data?.getOrder.order?.status === OrderStatus.Cooking && (
+                <button onClick={() => onButtonClick(OrderStatus.Cooked)}>Accept Order</button>
+              )}
+              {data?.getOrder.order?.status !== OrderStatus.Cooking &&
+                data?.getOrder.order?.status !== OrderStatus.Pending && (
+                  <Status>Status: {data?.getOrder.order?.status}</Status>
+                )}
             </>
           )}
         </Table>
