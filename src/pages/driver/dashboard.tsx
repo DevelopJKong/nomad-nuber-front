@@ -26,6 +26,8 @@ const MapContent = styled.div<IDriverProps>`
    ${tw`h-10 w-10 bg-white rounded-full flex justify-center items-center text-lg`}
 `;
 
+const Button = styled.button``;
+
 const Dashboard = () => {
    const [driverCoords, setDriverCoords] = useState<ICoords>({ lng: 0, lat: 0 });
    const [map, setMap] = useState<google.maps.Map>();
@@ -57,6 +59,30 @@ const Dashboard = () => {
       setMaps(maps);
       map.panTo(new google.maps.LatLng(driverCoords.lat, driverCoords.lng));
    };
+
+   const onGetRouteClick = () => {
+      if (map) {
+         const directionsService = new google.maps.DirectionsService();
+         const directionsRenderer = new google.maps.DirectionsRenderer({
+            polylineOptions: {
+               strokeColor: "#000",
+               strokeOpacity: 1,
+            },
+         });
+         directionsRenderer.setMap(map);
+         directionsService.route(
+            {
+               origin: { location: new google.maps.LatLng(driverCoords.lat, driverCoords.lng) },
+               destination: { location: new google.maps.LatLng(driverCoords.lat + 0.05, driverCoords.lng + 0.05) },
+               travelMode: google.maps.TravelMode.DRIVING,
+            },
+            (result) => {
+               directionsRenderer.setDirections(result);
+            },
+         );
+      }
+   };
+
    const GOOGLE_MAP_KEY = process.env.REACT_APP_GOOGLE_MAP_KEY;
    return (
       <Container>
@@ -73,6 +99,7 @@ const Dashboard = () => {
                </MapContent>
             </GoogleMapReact>
          </Content>
+         <Button onClick={onGetRouteClick}>GET ROUTE</Button>
       </Container>
    );
 };
