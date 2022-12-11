@@ -2,6 +2,19 @@ import React, { useEffect, useState } from "react";
 import GoogleMapReact from "google-map-react";
 import styled from "styled-components";
 import tw from "twin.macro";
+import { gql, useSubscription } from "@apollo/client";
+import { FULL_ORDER_FRAGMENT } from "../../fragments";
+import { cookedOrders } from "../../__generated__/cookedOrders";
+import { Link } from "react-router-dom";
+
+const COOKED_ORDERS_SUBSCRIPTION = gql`
+   subscription cookedOrders {
+      cookedOrders {
+         ...FullOrderParts
+      }
+   }
+   ${FULL_ORDER_FRAGMENT}
+`;
 
 interface ICoords {
    lat: number;
@@ -26,7 +39,23 @@ const MapContent = styled.div<IDriverProps>`
    ${tw`h-10 w-10 bg-white rounded-full flex justify-center items-center text-lg`}
 `;
 
-const Button = styled.button``;
+const Order = styled.div`
+   ${tw`max-w-screen-sm mx-auto bg-white  relative -top-10 shadow-lg py-8 px-5 `}
+`;
+
+const Title = styled.h1`
+   ${tw`text-center text-3xl font-medium`}
+`;
+
+const SubTitle = styled.h1`
+   ${tw`text-center  my-3  text-2xl font-medium`}
+`;
+
+const Button = styled(Link)`
+   ${tw`text-lg font-medium focus:outline-none text-white py-4  transition-colors w-full mt-5 block text-center`}
+`;
+
+const { data: cookedOrdersData } = useSubscription<cookedOrders>(COOKED_ORDERS_SUBSCRIPTION);
 
 const Dashboard = () => {
    const [driverCoords, setDriverCoords] = useState<ICoords>({ lng: 0, lat: 0 });
@@ -45,6 +74,12 @@ const Dashboard = () => {
    }, []);
 
    useEffect(() => {
+      if (cookedOrdersData?.cookedOrders.id) {
+         makeRoute();
+      }
+   }, [cookedOrdersData]);
+
+   useEffect(() => {
       if (map && maps) {
          map.panTo(new google.maps.LatLng(driverCoords.lat, driverCoords.lng));
          const geocoder = new google.maps.Geocoder();
@@ -60,7 +95,7 @@ const Dashboard = () => {
       map.panTo(new google.maps.LatLng(driverCoords.lat, driverCoords.lng));
    };
 
-   const onGetRouteClick = () => {
+   const makeRoute = () => {
       if (map) {
          const directionsService = new google.maps.DirectionsService();
          const directionsRenderer = new google.maps.DirectionsRenderer({
@@ -99,7 +134,19 @@ const Dashboard = () => {
                </MapContent>
             </GoogleMapReact>
          </Content>
-         <Button onClick={onGetRouteClick}>GET ROUTE</Button>
+         <Order>
+            {cookedOrdersData?.cookedOrders.restaurant ? (
+               <>
+                  <Title>New Cooked Order</Title>
+                  <SubTitle>Pick it up soon!</SubTitle>
+                  <Button to={`/orders/${cookedOrdersData?.cookedOrders.id}`}>Accept Challenge &rarr;</Button>
+               </>
+            ) : (
+               <>
+                  <Title>No Orders yet...</Title>
+               </>
+            )}
+         </Order>
       </Container>
    );
 };

@@ -6,10 +6,10 @@ import tw from "twin.macro";
 import { Helmet } from "react-helmet-async";
 import { FULL_ORDER_FRAGMENT } from "../fragments";
 import { useMe } from "../hooks/useMe";
-import { OrderStatus, UserRole } from "../__generated__/globalTypes";
 import { editOrder, editOrderVariables } from "../__generated__/editOrder";
 import { getOrder, getOrderVariables } from "../__generated__/getOrder";
 import { orderUpdates } from "../__generated__/orderUpdates";
+import { OrderStatus, UserRole } from "../__generated__/globalTypes";
 
 const Container = styled.div`
   ${tw`mt-3 container flex justify-center`}

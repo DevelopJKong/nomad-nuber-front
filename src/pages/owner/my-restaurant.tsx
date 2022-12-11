@@ -4,11 +4,11 @@ import { Link, useHistory, useParams } from "react-router-dom";
 import { DISH_FRAGMENT, FULL_ORDER_FRAGMENT, ORDERS_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { myRestaurant, myRestaurantVariables } from "../../__generated__/myRestaurant";
 import Dish from "../../components/dish";
-import { VictoryBar, VictoryChart, VictoryAxis, VictoryPie } from "victory";
+// import { VictoryBar, VictoryChart, VictoryAxis, VictoryPie } from "victory";
 import { Helmet } from "react-helmet-async";
 import { useMe } from "../../hooks/useMe";
+import { myRestaurant, myRestaurantVariables } from "../../__generated__/myRestaurant";
 import { createPayment, createPaymentVariables } from "../../__generated__/createPayment";
 import { pendingOrders } from "../../__generated__/pendingOrders";
 const Wrapper = styled.div``;
@@ -171,7 +171,7 @@ export const MyRestaurant = () => {
             <UploadText>Please upload a dish</UploadText>
           ) : (
             <DishWrapper>
-              {data?.myRestaurant.restaurant?.menu.map((dish, index) => (
+              {data?.myRestaurant.restaurant?.menu.map((dish:any, index:number) => (
                 <Dish
                   key={index}
                   name={dish.name}
