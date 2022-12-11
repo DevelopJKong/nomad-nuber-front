@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import GoogleMapReact from "google-map-react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { gql, useSubscription } from "@apollo/client";
+import { gql, useMutation, useSubscription } from "@apollo/client";
 import { FULL_ORDER_FRAGMENT } from "../../fragments";
 import { cookedOrders } from "../../__generated__/cookedOrders";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { takeOrder, takeOrderVariables } from "../../__generated__/takeOrder";
 
 const COOKED_ORDERS_SUBSCRIPTION = gql`
    subscription cookedOrders {
@@ -14,6 +15,15 @@ const COOKED_ORDERS_SUBSCRIPTION = gql`
       }
    }
    ${FULL_ORDER_FRAGMENT}
+`;
+
+const TAKE_ORDER_MUTATION = gql`
+   mutation takeOrder($input: TakeOrderInput!) {
+      takeOrder(input: $input) {
+         ok
+         error
+      }
+   }
 `;
 
 interface ICoords {
@@ -51,7 +61,7 @@ const SubTitle = styled.h1`
    ${tw`text-center  my-3  text-2xl font-medium`}
 `;
 
-const Button = styled(Link)`
+const Button = styled.button`
    ${tw`text-lg font-medium focus:outline-none text-white py-4  transition-colors w-full mt-5 block text-center`}
 `;
 
@@ -61,6 +71,29 @@ const Dashboard = () => {
    const [driverCoords, setDriverCoords] = useState<ICoords>({ lng: 0, lat: 0 });
    const [map, setMap] = useState<google.maps.Map>();
    const [maps, setMaps] = useState<any>();
+   const history = useHistory();
+   
+   const triggerMutation = (orderId: number) => {
+      takeOrderMutation({
+         variables: {
+            input: {
+               id: orderId,
+            },
+         },
+      });
+   };
+
+   const onCompleted = (data: takeOrder) => {
+      if (data.takeOrder.ok) {
+        history.push(`/orders/${cookedOrdersData?.cookedOrders.id}`);
+      }
+    };
+    const [takeOrderMutation] = useMutation<takeOrder, takeOrderVariables>(
+      TAKE_ORDER_MUTATION,
+      {
+        onCompleted,
+      }
+    );
    const onSuccess = ({ coords: { latitude, longitude } }: any) => {
       setDriverCoords({ lat: latitude, lng: longitude });
    };
@@ -139,7 +172,7 @@ const Dashboard = () => {
                <>
                   <Title>New Cooked Order</Title>
                   <SubTitle>Pick it up soon!</SubTitle>
-                  <Button to={`/orders/${cookedOrdersData?.cookedOrders.id}`}>Accept Challenge &rarr;</Button>
+                  <Button onClick={() => triggerMutation(cookedOrdersData?.cookedOrders.id)}>Accept Challenge &rarr;</Button>
                </>
             ) : (
                <>
