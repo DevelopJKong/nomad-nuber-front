@@ -8,6 +8,12 @@ interface ICoords {
    lng: number;
 }
 
+interface IDriverProps {
+   lat: number;
+   lng: number;
+   $hover?: any;
+}
+
 const Container = styled.div``;
 
 const Content = styled.div`
@@ -16,13 +22,13 @@ const Content = styled.div`
    height: 50vh;
 `;
 
-const MapContent = styled.div<{ lat: any; lng: any }>`
+const MapContent = styled.div<IDriverProps>`
    ${tw`h-10 w-10 bg-white rounded-full flex justify-center items-center text-lg`}
 `;
 
 const Dashboard = () => {
    const [driverCoords, setDriverCoords] = useState<ICoords>({ lng: 0, lat: 0 });
-   const [map, setMap] = useState<any>();
+   const [map, setMap] = useState<google.maps.Map>();
    const [maps, setMaps] = useState<any>();
    const onSuccess = ({ coords: { latitude, longitude } }: any) => {
       setDriverCoords({ lat: latitude, lng: longitude });
@@ -38,14 +44,18 @@ const Dashboard = () => {
 
    useEffect(() => {
       if (map && maps) {
-         map.panTo(new maps.LatLng(driverCoords.lat, driverCoords.lng));
+         map.panTo(new google.maps.LatLng(driverCoords.lat, driverCoords.lng));
+         const geocoder = new google.maps.Geocoder();
+         geocoder.geocode({ location: new google.maps.LatLng(driverCoords.lat, driverCoords.lng) }, (result, status) => {
+            console.log(result, status);
+         });
       }
    }, [driverCoords.lat, driverCoords.lng]);
 
    const onApiLoaded = ({ map, maps }: { map: any; maps: any }) => {
       setMap(map);
       setMaps(maps);
-      map.panTo(new maps.LatLng(driverCoords.lat, driverCoords.lng));
+      map.panTo(new google.maps.LatLng(driverCoords.lat, driverCoords.lng));
    };
    const GOOGLE_MAP_KEY = process.env.REACT_APP_GOOGLE_MAP_KEY;
    return (
