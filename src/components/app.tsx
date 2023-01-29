@@ -11,11 +11,11 @@ import LoggedOutRouter from "../routers/logged-out-router";
 // `;
 
 export const App = () => {
-  // const {
-  //   data: { isLoggedIn },
-  // } = useQuery(IS_LOGGED_IN);
+   // const {
+   //   data: { isLoggedIn },
+   // } = useQuery(IS_LOGGED_IN);
 
-  const isLoggedIn = useReactiveVar(isLoggedInVar);
+   const isLoggedIn = useReactiveVar(isLoggedInVar);
 
-  return isLoggedIn ? <LoggedInRouter /> : <LoggedOutRouter />;
+   return isLoggedIn ? <LoggedInRouter /> : <LoggedOutRouter />;
 };

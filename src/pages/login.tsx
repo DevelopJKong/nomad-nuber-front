@@ -16,35 +16,35 @@ import { loginMutation, loginMutationVariables } from "../__generated__/loginMut
 // !  https://eslint.org/docs/latest/rules/quotes
 
 const Container = styled.div`
-  ${tw`h-screen flex items-center flex-col mt-10 lg:mt-28`}
+   ${tw`h-screen flex items-center flex-col mt-10 lg:mt-28`}
 `;
 
 const Content = styled.div`
-  ${tw`bg-white w-full max-w-lg pt-8 pb-7 rounded-lg text-center`}
+   ${tw`bg-white w-full max-w-lg pt-8 pb-7 rounded-lg text-center`}
 `;
 
 const Screen = styled.div`
-  ${tw`w-full max-w-screen-md flex flex-col px-5 items-center`}
+   ${tw`w-full max-w-screen-md flex flex-col px-5 items-center`}
 `;
 
 const Title = styled.h4`
-  ${tw`w-full font-medium text-left text-2xl mb-5 mt-5`}
+   ${tw`w-full font-medium text-left text-2xl mb-5 mt-5`}
 `;
 
 const Img = styled.img`
-  ${tw`w-52 mb-1`}
+   ${tw`w-52 mb-1`}
 `;
 
 const Form = styled.form`
-  ${tw`grid gap-3 mt-5 w-full mb-5`}
+   ${tw`grid gap-3 mt-5 w-full mb-5`}
 `;
 
 export const Input = styled.input`
-  ${tw`focus:outline-none focus:border-gray-500 p-3 border-2 text-lg border-gray-200 transition-colors`}
+   ${tw`focus:outline-none focus:border-gray-500 p-3 border-2 text-lg border-gray-200 transition-colors`}
 `;
 
 const RegisterLink = styled(Link)`
-  ${tw`text-lime-600 hover:underline`}
+   ${tw`text-lime-600 hover:underline`}
 `;
 
 // const Error = styled.div`
@@ -52,117 +52,110 @@ const RegisterLink = styled(Link)`
 // `;
 
 export const LOGIN_MUTATION = gql`
-  mutation loginMutation($loginInput: LoginInput!) {
-    login(input: $loginInput) {
-      ok
-      token
-      error
-    }
-  }
+   mutation loginMutation($loginInput: LoginInput!) {
+      login(input: $loginInput) {
+         ok
+         token
+         error
+      }
+   }
 `;
 
 interface ILoginForm {
-  email: string;
-  password: string;
+   email: string;
+   password: string;
 }
 
 const Login = () => {
-  const {
-    register,
-    handleSubmit,
-    clearErrors,
-    formState: { errors, isValid },
-  } = useForm<ILoginForm>({
-    mode: "onChange",
-  });
+   const {
+      register,
+      handleSubmit,
+      clearErrors,
+      formState: { errors, isValid },
+   } = useForm<ILoginForm>({
+      mode: "onChange",
+   });
 
-  const onCompleted = (data: loginMutation) => {
-    const {
-      login: { error, ok, token },
-    } = data;
-    if (ok && token) {
-      console.log(data);
-      localStorage.setItem(LOCALSTORAGE_TOKEN, token);
-      authTokenVar(token);
-      isLoggedInVar(true);
-    } else {
-      console.log(error);
-    }
-  };
+   const onCompleted = (data: loginMutation) => {
+      const {
+         login: { error, ok, token },
+      } = data;
+      if (ok && token) {
+         console.log(data);
+         localStorage.setItem(LOCALSTORAGE_TOKEN, token);
+         authTokenVar(token);
+         isLoggedInVar(true);
+      } else {
+         console.log(error);
+      }
+   };
 
-  const [loginMutation, { data: loginMutationResult, loading }] = useMutation<
-    loginMutation,
-    loginMutationVariables
-  >(LOGIN_MUTATION, {
-    onCompleted,
-  });
+   const [loginMutation, { data: loginMutationResult, loading }] = useMutation<loginMutation, loginMutationVariables>(LOGIN_MUTATION, {
+      onCompleted,
+   });
 
-  const onValid = (data: ILoginForm) => {
-    if (!loading) {
-      const { email, password } = data;
-      loginMutation({
-        variables: {
-          loginInput: {
-            email,
-            password,
-          },
-        },
-      });
-    }
-  };
+   const onValid = (data: ILoginForm) => {
+      if (!loading) {
+         const { email, password } = data;
+         loginMutation({
+            variables: {
+               loginInput: {
+                  email,
+                  password,
+               },
+            },
+         });
+      }
+   };
 
-  return (
-    <Container>
-      <Helmet>
-        <title>Login | Nuber Eats</title>
-      </Helmet>
-      <Content>
-        <Screen>
-          <Img src={LOGO} />
-          <Title>Welcome back</Title>
-          <Form onSubmit={handleSubmit(onValid)} onClick={() => clearErrors()}>
-            <Input
-              role="email"
-              placeholder='Email'
-              type='email'
-              {...register("email", {
-                required: {
-                  value: true,
-                  message: "Email is required",
-                },
-                pattern:
-                  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-              })}
-            />
-            {errors.email?.type === "pattern" && (
-              <FormError errorMessage={"Please enter a valid email"} />
-            )}
-            {errors.email?.message && <FormError errorMessage={errors.email?.message} />}
-            <Input
-              role="password"
-              placeholder='Password'
-              type='password'
-              {...register("password", {
-                required: {
-                  value: true,
-                  message: "Password is required",
-                },
-              })}
-            />
-            {errors.password?.message && <FormError errorMessage={errors.password?.message} />}
+   return (
+      <Container>
+         <Helmet>
+            <title>Login | Nuber Eats</title>
+         </Helmet>
+         <Content>
+            <Screen>
+               <Img src={LOGO} />
+               <Title>Welcome back</Title>
+               <Form onSubmit={handleSubmit(onValid)} onClick={() => clearErrors()}>
+                  <Input
+                     role='email'
+                     placeholder='Email'
+                     type='email'
+                     {...register("email", {
+                        required: {
+                           value: true,
+                           message: "Email is required",
+                        },
+                        pattern:
+                           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                     })}
+                  />
+                  {errors.email?.type === "pattern" && <FormError errorMessage={"Please enter a valid email"} />}
+                  {errors.email?.message && <FormError errorMessage={errors.email?.message} />}
+                  <Input
+                     role='password'
+                     placeholder='Password'
+                     type='password'
+                     {...register("password", {
+                        required: {
+                           value: true,
+                           message: "Password is required",
+                        },
+                     })}
+                  />
+                  {errors.password?.message && <FormError errorMessage={errors.password?.message} />}
 
-            <Button canClick={isValid} loading={loading} actionText={"Log in"} />
-            {loginMutationResult?.login.error && (
-              <FormError errorMessage={loginMutationResult.login.error} />
-            )}
-          </Form>
-        </Screen>
-        <div>
-          New to Nuber? <RegisterLink to='/create-account'>Create an Account</RegisterLink>
-        </div>
-      </Content>
-    </Container>
-  );
+                  <Button canClick={isValid} loading={loading} actionText={"Log in"} />
+                  {loginMutationResult?.login.error && <FormError errorMessage={loginMutationResult.login.error} />}
+               </Form>
+            </Screen>
+            <div>
+               New to Nuber? <RegisterLink to='/create-account'>Create an Account</RegisterLink>
+            </div>
+         </Content>
+      </Container>
+   );
 };
 
 export default Login;

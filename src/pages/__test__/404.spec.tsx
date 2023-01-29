@@ -5,17 +5,17 @@ import { BrowserRouter as Router } from "react-router-dom";
 import NotFound from "../404";
 
 describe("<NotFound />", () => {
-  it("renders OK", async () => {
-    render(
-      <HelmetProvider>
-        <Router>
-          <NotFound />
-        </Router>
-      </HelmetProvider>,
-    );
+   it("renders OK", async () => {
+      render(
+         <HelmetProvider>
+            <Router>
+               <NotFound />
+            </Router>
+         </HelmetProvider>,
+      );
 
-    await waitFor(() => {
-      expect(document.title).toBe("Not Found | Nuber Eats");
-    });
-  });
+      await waitFor(() => {
+         expect(document.title).toBe("Not Found | Nuber Eats");
+      });
+   });
 });

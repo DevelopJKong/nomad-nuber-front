@@ -1,11 +1,11 @@
 import React from "react";
 
 interface IFormErrorProps {
-  errorMessage?: string;
+   errorMessage?: string;
 }
 
 export const FormError: React.FC<IFormErrorProps> = ({ errorMessage }) => (
-  <span role='alert' className='font-medium text-red-500'>
-    {errorMessage}
-  </span>
+   <span role='alert' className='font-medium text-red-500'>
+      {errorMessage}
+   </span>
 );

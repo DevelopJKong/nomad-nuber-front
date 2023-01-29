@@ -72,7 +72,7 @@ const Dashboard = () => {
    const [map, setMap] = useState<google.maps.Map>();
    const [maps, setMaps] = useState<any>();
    const history = useHistory();
-   
+
    const triggerMutation = (orderId: number) => {
       takeOrderMutation({
          variables: {
@@ -85,15 +85,12 @@ const Dashboard = () => {
 
    const onCompleted = (data: takeOrder) => {
       if (data.takeOrder.ok) {
-        history.push(`/orders/${cookedOrdersData?.cookedOrders.id}`);
+         history.push(`/orders/${cookedOrdersData?.cookedOrders.id}`);
       }
-    };
-    const [takeOrderMutation] = useMutation<takeOrder, takeOrderVariables>(
-      TAKE_ORDER_MUTATION,
-      {
-        onCompleted,
-      }
-    );
+   };
+   const [takeOrderMutation] = useMutation<takeOrder, takeOrderVariables>(TAKE_ORDER_MUTATION, {
+      onCompleted,
+   });
    const onSuccess = ({ coords: { latitude, longitude } }: any) => {
       setDriverCoords({ lat: latitude, lng: longitude });
    };
