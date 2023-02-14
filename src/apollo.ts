@@ -1,10 +1,10 @@
-import { LOCALSTORAGE_TOKEN } from "./constants";
+import { LOCAL_STORAGE_TOKEN } from "./constants";
 import { setContext } from "@apollo/client/link/context";
 import { WebSocketLink } from "@apollo/client/link/ws";
 import { getMainDefinition } from "@apollo/client/utilities";
 import { ApolloClient, createHttpLink, InMemoryCache, makeVar, split } from "@apollo/client";
 
-const token = localStorage.getItem(LOCALSTORAGE_TOKEN);
+const token = localStorage.getItem(LOCAL_STORAGE_TOKEN);
 
 export const isLoggedInVar = makeVar(Boolean(token));
 export const authTokenVar = makeVar(token);
