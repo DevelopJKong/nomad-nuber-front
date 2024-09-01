@@ -1,4 +1,4 @@
-schema: "http://localhost:3000/graphql" # GraphQL 스키마 URL
+schema: "http://localhost:5000/graphql" # GraphQL 스키마 URL
 documents: "src/**/*.{ts,tsx}" # GraphQL 쿼리/뮤테이션 파일의 경로
 generates:
    src/generated/graphql.tsx:
