@@ -1,0 +1,12 @@
+schema: "http://localhost:3000/graphql" # GraphQL 스키마 URL
+documents: "src/**/*.{ts,tsx}" # GraphQL 쿼리/뮤테이션 파일의 경로
+generates:
+   src/generated/graphql.tsx:
+      plugins:
+         - "typescript"
+         - "typescript-operations"
+         - "typescript-react-apollo"
+      config:
+         withHooks: true # 리액트 훅을 사용하도록 설정
+         withComponent: false # 리액트 컴포넌트 생성을 원치 않으면 false
+         withHOC: false # HOC를 원치 않으면 false

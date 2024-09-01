@@ -126,7 +126,7 @@ const AddDish = () => {
       register,
       handleSubmit,
       setValue,
-      formState: { errors, isValid },
+      formState: { isValid },
    } = useForm<IForm>({
       mode: "onChange",
    });

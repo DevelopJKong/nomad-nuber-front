@@ -10,11 +10,11 @@ export const isLoggedInVar = makeVar(Boolean(token));
 export const authTokenVar = makeVar(token);
 
 const httpLink = createHttpLink({
-   uri: "http://localhost:5000/graphql",
+   uri: "http://localhost:3000/graphql",
 });
 
 const wsLink = new WebSocketLink({
-   uri: `ws://localhost:5000/graphql`,
+   uri: `ws://localhost:3000/graphql`,
    options: {
       reconnect: true,
       connectionParams: {

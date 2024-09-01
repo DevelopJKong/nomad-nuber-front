@@ -4,9 +4,9 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { gql, useMutation, useSubscription } from "@apollo/client";
 import { FULL_ORDER_FRAGMENT } from "../../fragments";
+import { useHistory } from "react-router-dom";
 import { cookedOrders } from "../../__generated__/cookedOrders";
-import { Link, useHistory } from "react-router-dom";
-import { takeOrder, takeOrderVariables } from "../../__generated__/takeOrder";
+import { TakeOrderInput, TakeOrderOutput } from "../../generated/graphql";
 
 const COOKED_ORDERS_SUBSCRIPTION = gql`
    subscription cookedOrders {
@@ -83,12 +83,12 @@ const Dashboard = () => {
       });
    };
 
-   const onCompleted = (data: takeOrder) => {
+   const onCompleted = (data: { takeOrder: TakeOrderOutput }) => {
       if (data.takeOrder.ok) {
          history.push(`/orders/${cookedOrdersData?.cookedOrders.id}`);
       }
    };
-   const [takeOrderMutation] = useMutation<takeOrder, takeOrderVariables>(TAKE_ORDER_MUTATION, {
+   const [takeOrderMutation] = useMutation<{ takeOrder: TakeOrderOutput }, { input: TakeOrderInput }>(TAKE_ORDER_MUTATION, {
       onCompleted,
    });
    const onSuccess = ({ coords: { latitude, longitude } }: any) => {
