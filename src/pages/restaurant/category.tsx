@@ -2,7 +2,7 @@ import React from "react";
 import { gql, useQuery } from "@apollo/client";
 import { useParams } from "react-router-dom";
 import { RESTAURANT_FRAGMENT, CATEGORY_FRAGMENT } from "../../fragments";
-import { category, categoryVariables } from "../../__generated__/category";
+import { CategoryInput, CategoryOutput } from "../../generated/graphql";
 
 const CATEGORY_QUERY = gql`
    query category($input: CategoryInput!) {
@@ -29,7 +29,7 @@ interface ICategoryParams {
 
 const Category = () => {
    const params = useParams<ICategoryParams>();
-   const { data, loading } = useQuery<category, categoryVariables>(CATEGORY_QUERY, {
+   const { data: _data, loading: _loading } = useQuery<{ category: CategoryOutput }, { input: CategoryInput }>(CATEGORY_QUERY, {
       variables: {
          input: {
             page: 1,

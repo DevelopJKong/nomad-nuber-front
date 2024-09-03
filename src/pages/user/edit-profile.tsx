@@ -5,7 +5,7 @@ import styled from "styled-components";
 import tw from "twin.macro";
 import { Button } from "../../components/button";
 import { useMe } from "../../hooks/useMe";
-import { editProfile, editProfileVariables } from "../../__generated__/editProfile";
+import { EditProfileInput, EditProfileOutput } from "../../generated/graphql";
 
 const Container = styled.div`
    ${tw`mt-52 flex flex-col justify-center items-center`}
@@ -44,13 +44,13 @@ const EDIT_PROFILE_MUTATION = gql`
 const EditProfile = () => {
    const { data: userData, refetch: refetchUser } = useMe();
    // const client = useApolloClient();
-   const onCompleted = async (data: editProfile) => {
+   const onCompleted = async (data: { editProfile: EditProfileOutput }) => {
       const {
          editProfile: { ok },
       } = data;
       if (ok && userData) {
          await refetchUser();
-         // TODO writeFragmet 제대로 이해하기 editProfile
+         // TODO writeFragment 제대로 이해하기 editProfile
          // client.writeFragment({
          //   id: `User:${id}`,
          //   fragment: gql`
@@ -66,7 +66,9 @@ const EditProfile = () => {
          // });
       }
    };
-   const [editProfile, { loading }] = useMutation<editProfile, editProfileVariables>(EDIT_PROFILE_MUTATION, { onCompleted });
+   const [editProfile, { loading }] = useMutation<{ editProfile: EditProfileOutput }, { input: EditProfileInput }>(EDIT_PROFILE_MUTATION, {
+      onCompleted,
+   });
    const {
       register,
       handleSubmit,

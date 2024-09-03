@@ -5,10 +5,10 @@ import styled from "styled-components";
 import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
 import tw from "twin.macro";
 import Dish from "../../components/dish";
-import { restaurant, restaurantVariables } from "../../__generated__/restaurant";
 import { CreateOrderItemInput } from "../../__generated__/globalTypes";
 import DishOption from "../../components/dish-option";
 import { createOrder, createOrderVariables } from "../../__generated__/createOrder";
+import { RestaurantInput, RestaurantOutput } from "../../generated/graphql";
 
 const Container = styled.div``;
 
@@ -25,10 +25,6 @@ const Title = styled.h4`
 `;
 
 const CategoryName = styled.h5`
-   ${tw`text-sm font-light`}
-`;
-
-const Address = styled.h6`
    ${tw`text-sm font-light`}
 `;
 
@@ -86,7 +82,7 @@ interface IRestaurantParams {
 const Restaurant = () => {
    const params = useParams<IRestaurantParams>();
    const history = useHistory();
-   const { loading, data } = useQuery<restaurant, restaurantVariables>(RESTAURANT_QUERY, {
+   const { loading: _loading, data } = useQuery<{ restaurant: RestaurantOutput }, { input: RestaurantInput }>(RESTAURANT_QUERY, {
       variables: {
          input: {
             restaurantId: +params.id,
@@ -128,7 +124,7 @@ const Restaurant = () => {
 
          if (!hasOption) {
             removeFromOrder(dishId);
-            setOrderItems((current) => [{ dishId, options: [{ name: optionName }, ...oldItem.options!] }, ...current]);
+            setOrderItems((current) => [{ dishId, options: [{ name: optionName }, ...(oldItem.options ?? [])] }, ...current]);
          }
       }
    };
@@ -170,7 +166,7 @@ const Restaurant = () => {
    };
    const onCompleted = (data: createOrder) => {
       const {
-         createOrder: { ok, orderId },
+         createOrder: { orderId },
       } = data;
       if (data.createOrder.ok) {
          history.push(`/orders/${orderId}`);
@@ -229,7 +225,7 @@ const Restaurant = () => {
                      description={dish.description}
                      price={dish.price}
                      isCustomer={true}
-                     options={dish.options}
+                     options={dish?.options ?? []}
                      addItemToOrder={addItemToOrder}
                      removeFromOrder={removeFromOrder}
                   >

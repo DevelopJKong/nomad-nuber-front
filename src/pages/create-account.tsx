@@ -7,7 +7,7 @@ import { gql, useMutation } from "@apollo/client";
 import { Button } from "../components/button";
 import { Link, useHistory } from "react-router-dom";
 import { UserRole } from "../__generated__/globalTypes";
-import { createAccountMutation, createAccountMutationVariables } from "../__generated__/createAccountMutation";
+import { CreateAccountInput, CreateAccountOutput } from "../generated/graphql";
 
 const Container = styled.div`
    ${tw`h-screen flex items-center flex-col mt-10 lg:mt-28`}
@@ -77,7 +77,7 @@ const CreateAccount = () => {
       },
    });
    const history = useHistory();
-   const onCompleted = (data: createAccountMutation) => {
+   const onCompleted = (data: { createAccount: CreateAccountOutput }) => {
       const {
          createAccount: { ok },
       } = data;
@@ -90,8 +90,8 @@ const CreateAccount = () => {
    };
 
    const [createAccountMutation, { data: createAccountMutationResult, loading }] = useMutation<
-      createAccountMutation,
-      createAccountMutationVariables
+      { createAccount: CreateAccountOutput },
+      { createAccountInput: CreateAccountInput }
    >(CREATE_ACCOUNT_MUTATION, {
       onCompleted,
    });

@@ -2,11 +2,15 @@ import React from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
 
-const Option = styled.span.attrs<{ getOptionFromItem: boolean }>(({ getOptionFromItem }) => {
+type TOption = {
+   getOptionFromItem: boolean;
+};
+
+const Option = styled.span.attrs<TOption>(({ getOptionFromItem }) => {
    return {
       className: getOptionFromItem ? "border-gray-800" : "hover:border-gray-800",
    };
-})<{ getOptionFromItem: boolean }>`
+})<TOption>`
    ${tw`border px-2 py-1`}
 `;
 

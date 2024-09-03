@@ -5,7 +5,7 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import tw from "twin.macro";
 import { useMe } from "../../hooks/useMe";
-import { verifyEmail, verifyEmailVariables } from "../../__generated__/verifyEmail";
+import { VerifyEmailInput, VerifyEmailOutput } from "../../generated/graphql";
 
 const Container = styled.div`
    ${tw`mt-52 flex flex-col items-center justify-center`}
@@ -32,7 +32,7 @@ const ConfirmEmail = () => {
    const { data: userData, refetch } = useMe();
    // const client = useApolloClient();
    const history = useHistory();
-   const onCompleted = async (data: verifyEmail) => {
+   const onCompleted = async (data: { verifyEmail: VerifyEmailOutput }) => {
       const {
          verifyEmail: { ok },
       } = data;
@@ -53,7 +53,12 @@ const ConfirmEmail = () => {
       }
    };
 
-   const [verifyEmail, { loading: _ }] = useMutation<verifyEmail, verifyEmailVariables>(VERIFY_EMAIL_MUTATION, { onCompleted });
+   const [verifyEmail, { loading: _ }] = useMutation<{ verifyEmail: VerifyEmailOutput }, { input: VerifyEmailInput }>(
+      VERIFY_EMAIL_MUTATION,
+      {
+         onCompleted,
+      },
+   );
 
    useEffect(() => {
       const [_, code] = window.location.href.split("code=");

@@ -8,7 +8,7 @@ import { Button } from "../components/button";
 import { Link } from "react-router-dom";
 import { authTokenVar, isLoggedInVar } from "../apollo";
 import { LOCAL_STORAGE_TOKEN, LOGO } from "../constants";
-import { loginMutation, loginMutationVariables } from "../__generated__/loginMutation";
+import { LoginInput, LoginOutput } from "../generated/graphql";
 
 // !  https://velog.io/@jinsunkimdev/%EB%A6%AC%EC%95%A1%ED%8A%B8%EC%97%90%EC%84%9C-tailwindcss-styled-components-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0
 // !  https://itchallenger.tistory.com/569 ⭐⭐⭐⭐⭐⭐⭐⭐
@@ -76,7 +76,7 @@ const Login = () => {
       mode: "onChange",
    });
 
-   const onCompleted = (data: loginMutation) => {
+   const onCompleted = (data: { login: LoginOutput }) => {
       const {
          login: { error, ok, token },
       } = data;
@@ -90,9 +90,12 @@ const Login = () => {
       }
    };
 
-   const [loginMutation, { data: loginMutationResult, loading }] = useMutation<loginMutation, loginMutationVariables>(LOGIN_MUTATION, {
-      onCompleted,
-   });
+   const [loginMutation, { data: loginMutationResult, loading }] = useMutation<{ login: LoginOutput }, { loginInput: LoginInput }>(
+      LOGIN_MUTATION,
+      {
+         onCompleted,
+      },
+   );
 
    const onValid = (data: ILoginForm) => {
       if (!loading) {

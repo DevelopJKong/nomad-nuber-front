@@ -6,10 +6,8 @@ import tw from "twin.macro";
 import { Helmet } from "react-helmet-async";
 import { FULL_ORDER_FRAGMENT } from "../fragments";
 import { useMe } from "../hooks/useMe";
-import { editOrder, editOrderVariables } from "../__generated__/editOrder";
-import { getOrder, getOrderVariables } from "../__generated__/getOrder";
-import { orderUpdates } from "../__generated__/orderUpdates";
 import { OrderStatus, UserRole } from "../__generated__/globalTypes";
+import { EditOrderInput, EditOrderOutput, GetOrderInput, GetOrderOutput, Subscription } from "../generated/graphql";
 
 const Container = styled.div`
    ${tw`mt-3 container flex justify-center`}
@@ -80,8 +78,8 @@ interface IParams {
 const Order = () => {
    const params = useParams<IParams>();
    const { data: userData } = useMe();
-   const [editOrderMutation] = useMutation<editOrder, editOrderVariables>(EDIT_ORDER);
-   const { data, subscribeToMore } = useQuery<getOrder, getOrderVariables>(GET_ORDER, {
+   const [editOrderMutation] = useMutation<{ editOrder: EditOrderOutput }, { input: EditOrderInput }>(EDIT_ORDER);
+   const { data, subscribeToMore } = useQuery<{ getOrder: GetOrderOutput }, { input: GetOrderInput }>(GET_ORDER, {
       variables: {
          input: {
             id: Number(params.id),
@@ -98,7 +96,10 @@ const Order = () => {
                },
             },
 
-            updateQuery: (prev, { subscriptionData: { data: updateData } }: { subscriptionData: { data: orderUpdates } }) => {
+            updateQuery: (
+               prev,
+               { subscriptionData: { data: updateData } }: { subscriptionData: { data: { orderUpdates: Subscription["orderUpdates"] } } },
+            ): { getOrder: GetOrderOutput } => {
                if (!updateData) return prev;
                return {
                   getOrder: {

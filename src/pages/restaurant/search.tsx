@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 import { useHistory, useLocation } from "react-router-dom";
 import { RESTAURANT_FRAGMENT } from "../../fragments";
-import { searchRestaurant, searchRestaurantVariables } from "../../__generated__/searchRestaurant";
+import { SearchRestaurantInput, SearchRestaurantOutput } from "../../generated/graphql";
 
 const SEARCH_RESTAURANT = gql`
    query searchRestaurant($input: SearchRestaurantInput!) {
@@ -23,7 +23,10 @@ const SEARCH_RESTAURANT = gql`
 export const Search = () => {
    const location = useLocation();
    const history = useHistory();
-   const [callQuery, { loading, data, called }] = useLazyQuery<searchRestaurant, searchRestaurantVariables>(SEARCH_RESTAURANT);
+   const [callQuery, { loading, data, called }] = useLazyQuery<
+      { searchRestaurant: SearchRestaurantOutput },
+      { input: SearchRestaurantInput }
+   >(SEARCH_RESTAURANT);
    useEffect(() => {
       const [_, query] = location.search.split("?term=");
       if (!query) {

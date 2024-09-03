@@ -1,13 +1,16 @@
 import React from "react";
 import styled from "styled-components";
 import tw from "twin.macro";
-import { restaurant_restaurant_restaurant_menu_options } from "../__generated__/restaurant";
 
-const Container = styled.div.attrs<{ isSelected: boolean }>(({ isSelected }) => {
+type TIsSelected = {
+   isSelected: boolean;
+};
+
+const Container = styled.div.attrs<TIsSelected>(({ isSelected }) => {
    return {
       className: isSelected ? "border-gray-800" : " hover:border-gray-800",
    };
-})<{ isSelected: boolean }>`
+})<TIsSelected>`
    ${tw`px-8 pt-3 pb-8 border hover:border-gray-800 transition-all`}
 `;
 
@@ -19,11 +22,11 @@ const Name = styled.h3`
    ${tw`text-lg font-medium flex items-center`}
 `;
 
-const Button = styled.button.attrs<{ isSelected: boolean }>(({ isSelected }) => {
+const Button = styled.button.attrs<TIsSelected>(({ isSelected }) => {
    return {
       className: isSelected ? "bg-red-500" : "bg-lime-500",
    };
-})<{ isSelected: boolean }>`
+})<TIsSelected>`
    ${tw`ml-3 py-1 px-3 focus:outline-none text-sm text-white`}
 `;
 
@@ -49,10 +52,10 @@ interface IDishProps {
    price: number;
    isCustomer?: boolean;
    orderStarted?: boolean;
-   options?: restaurant_restaurant_restaurant_menu_options[] | null;
-   addItemToOrder?: (dishId: number) => void;
-   removeFromOrder?: (dishId: number) => void;
-   addOptionToItem?: (dishId: number, options: any) => void;
+   options?: any[] | null;
+   addItemToOrder?: (_dishId: number) => void;
+   removeFromOrder?: (_dishId: number) => void;
+   addOptionToItem?: (_dishId: number, _options: any) => void;
    children?: React.ReactNode;
 }
 

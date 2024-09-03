@@ -1,6 +1,5 @@
 import { gql, useQuery } from "@apollo/client";
 import styled from "styled-components";
-import { restaurantsPageQuery, restaurantsPageQueryVariables } from "../../__generated__/restaurantsPageQuery";
 import tw from "twin.macro";
 import Restaurant from "../../components/restaurant";
 import { useState } from "react";
@@ -8,6 +7,7 @@ import { useForm } from "react-hook-form";
 import { Link, useHistory } from "react-router-dom";
 import { Helmet } from "react-helmet";
 import { CATEGORY_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
+import { AllCategoriesOutput, RestaurantsInput, RestaurantsOutput } from "../../generated/graphql";
 const Container = styled.div``;
 
 const Form = styled.div`
@@ -88,7 +88,13 @@ interface IFormProps {
 const Restaurants = () => {
    const [page, setPage] = useState(1);
    const history = useHistory();
-   const { data, loading } = useQuery<restaurantsPageQuery, restaurantsPageQueryVariables>(RESTAURANTS_QUERY, {
+   const { data, loading } = useQuery<
+      {
+         allCategories: AllCategoriesOutput;
+         restaurants: RestaurantsOutput;
+      },
+      { input: RestaurantsInput }
+   >(RESTAURANTS_QUERY, {
       variables: {
          input: {
             page,
