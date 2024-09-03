@@ -6,8 +6,7 @@ import { FormError } from "../components/form-error";
 import { gql, useMutation } from "@apollo/client";
 import { Button } from "../components/button";
 import { Link, useHistory } from "react-router-dom";
-import { UserRole } from "../__generated__/globalTypes";
-import { CreateAccountInput, CreateAccountOutput } from "../generated/graphql";
+import { CreateAccountInput, CreateAccountOutput, UserRole } from "../generated/graphql";
 
 const Container = styled.div`
    ${tw`h-screen flex items-center flex-col mt-10 lg:mt-28`}

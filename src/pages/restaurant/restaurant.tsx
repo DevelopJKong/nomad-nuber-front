@@ -5,10 +5,8 @@ import styled from "styled-components";
 import { DISH_FRAGMENT, RESTAURANT_FRAGMENT } from "../../fragments";
 import tw from "twin.macro";
 import Dish from "../../components/dish";
-import { CreateOrderItemInput } from "../../__generated__/globalTypes";
 import DishOption from "../../components/dish-option";
-import { createOrder, createOrderVariables } from "../../__generated__/createOrder";
-import { RestaurantInput, RestaurantOutput } from "../../generated/graphql";
+import { CreateOrderInput, CreateOrderItemInput, CreateOrderOutput, RestaurantInput, RestaurantOutput } from "../../generated/graphql";
 
 const Container = styled.div``;
 
@@ -164,7 +162,7 @@ const Restaurant = () => {
       setOrderStarted(false);
       setOrderItems([]);
    };
-   const onCompleted = (data: createOrder) => {
+   const onCompleted = (data: { createOrder: CreateOrderOutput }) => {
       const {
          createOrder: { orderId },
       } = data;
@@ -172,9 +170,12 @@ const Restaurant = () => {
          history.push(`/orders/${orderId}`);
       }
    };
-   const [createOrderMutation, { loading: placingOrder }] = useMutation<createOrder, createOrderVariables>(CREATE_ORDER_MUTATION, {
-      onCompleted,
-   });
+   const [createOrderMutation, { loading: placingOrder }] = useMutation<{ createOrder: CreateOrderOutput }, { input: CreateOrderInput }>(
+      CREATE_ORDER_MUTATION,
+      {
+         onCompleted,
+      },
+   );
 
    const triggerConfirmOrder = () => {
       if (placingOrder) {

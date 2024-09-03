@@ -10,7 +10,7 @@ import { FormError } from "../../components/form-error";
 import { Input as LoginInput } from "../login";
 import { MY_RESTAURANTS_QUERY } from "./my-restaurants";
 import { useHistory } from "react-router-dom";
-import { createRestaurant, createRestaurantVariables } from "../../__generated__/createRestaurant";
+import { CreateRestaurantInput, CreateRestaurantOutput } from "../../generated/graphql";
 
 const Container = styled.div`
    ${tw`container flex flex-col items-center mt-10`}
@@ -53,7 +53,7 @@ const AddRestaurants = () => {
    const client = useApolloClient();
    const history = useHistory();
    const [imageUrl, setImageUrl] = useState("");
-   const onCompleted = (data: createRestaurant) => {
+   const onCompleted = (data: { createRestaurant: CreateRestaurantOutput }) => {
       const {
          createRestaurant: { ok, restaurantId },
       } = data;
@@ -89,10 +89,13 @@ const AddRestaurants = () => {
       }
    };
 
-   const [createRestaurantMutation, { data }] = useMutation<createRestaurant, createRestaurantVariables>(CREATE_RESTAURANT_MUTATION, {
-      onCompleted,
-      // refetchQueries: [{ query: MY_RESTAURANTS_QUERY }],
-   });
+   const [createRestaurantMutation, { data }] = useMutation<{ createRestaurant: CreateRestaurantOutput }, { input: CreateRestaurantInput }>(
+      CREATE_RESTAURANT_MUTATION,
+      {
+         onCompleted,
+         // refetchQueries: [{ query: MY_RESTAURANTS_QUERY }],
+      },
+   );
 
    const {
       register,

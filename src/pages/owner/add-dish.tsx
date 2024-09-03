@@ -7,7 +7,7 @@ import { Helmet } from "react-helmet-async";
 import { useForm } from "react-hook-form";
 import { Button } from "../../components/button";
 import { MY_RESTAURANT_QUERY } from "./my-restaurant";
-import { createDish, createDishVariables } from "../../__generated__/createDish";
+import { CreateDishInput, CreateDishOutput } from "../../generated/graphql";
 
 const Container = styled.div`
    ${tw`container flex flex-col items-center mt-52`}
@@ -88,18 +88,21 @@ const AddDish = () => {
       setValue(`${index}-optionExtra`, "");
    };
 
-   const [createDishMutation, { loading }] = useMutation<createDish, createDishVariables>(CREATE_DISH_MUTATION, {
-      refetchQueries: [
-         {
-            query: MY_RESTAURANT_QUERY,
-            variables: {
-               input: {
-                  id: Number(restaurantId),
+   const [createDishMutation, { loading }] = useMutation<{ createDish: CreateDishOutput }, { input: CreateDishInput }>(
+      CREATE_DISH_MUTATION,
+      {
+         refetchQueries: [
+            {
+               query: MY_RESTAURANT_QUERY,
+               variables: {
+                  input: {
+                     id: Number(restaurantId),
+                  },
                },
             },
-         },
-      ],
-   });
+         ],
+      },
+   );
 
    const onSubmit = (data: IForm) => {
       const { name, price, description, ...rest } = data;

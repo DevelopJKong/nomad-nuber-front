@@ -5,8 +5,7 @@ import tw from "twin.macro";
 import { gql, useMutation, useSubscription } from "@apollo/client";
 import { FULL_ORDER_FRAGMENT } from "../../fragments";
 import { useHistory } from "react-router-dom";
-import { cookedOrders } from "../../__generated__/cookedOrders";
-import { TakeOrderInput, TakeOrderOutput } from "../../generated/graphql";
+import { CookedOrdersSubscription, TakeOrderInput, TakeOrderOutput } from "../../generated/graphql";
 
 const COOKED_ORDERS_SUBSCRIPTION = gql`
    subscription cookedOrders {
@@ -65,7 +64,7 @@ const Button = styled.button`
    ${tw`text-lg font-medium focus:outline-none text-white py-4  transition-colors w-full mt-5 block text-center`}
 `;
 
-const { data: cookedOrdersData } = useSubscription<cookedOrders>(COOKED_ORDERS_SUBSCRIPTION);
+const { data: cookedOrdersData } = useSubscription<CookedOrdersSubscription>(COOKED_ORDERS_SUBSCRIPTION);
 
 const Dashboard = () => {
    const [driverCoords, setDriverCoords] = useState<ICoords>({ lng: 0, lat: 0 });

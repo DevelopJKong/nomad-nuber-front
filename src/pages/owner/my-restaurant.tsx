@@ -8,9 +8,13 @@ import Dish from "../../components/dish";
 // import { VictoryBar, VictoryChart, VictoryAxis, VictoryPie } from "victory";
 import { Helmet } from "react-helmet-async";
 import { useMe } from "../../hooks/useMe";
-import { myRestaurant, myRestaurantVariables } from "../../__generated__/myRestaurant";
-import { createPayment, createPaymentVariables } from "../../__generated__/createPayment";
-import { pendingOrders } from "../../__generated__/pendingOrders";
+import {
+   CreatePaymentInput,
+   CreatePaymentOutput,
+   MyRestaurantInput,
+   MyRestaurantOutput,
+   PendingOrdersSubscription,
+} from "../../generated/graphql";
 const Wrapper = styled.div``;
 
 const Image = styled.div`
@@ -41,18 +45,6 @@ const UploadText = styled.h4``;
 
 const DishWrapper = styled.div`
    ${tw`grid mt-16 md:grid-cols-4 gap-x-5 gap-y-10`}
-`;
-
-const SaleWrapper = styled.div`
-   ${tw`mt-20 mb-10`}
-`;
-
-const SaleText = styled.h4`
-   ${tw`text-center`}
-`;
-
-const Sale = styled.div`
-   ${tw`max-w-md w-full mx-auto`}
 `;
 
 export const MY_RESTAURANT_QUERY = gql`
@@ -99,19 +91,22 @@ interface IParams {
 }
 export const MyRestaurant = () => {
    const { id } = useParams<IParams>();
-   const { data } = useQuery<myRestaurant, myRestaurantVariables>(MY_RESTAURANT_QUERY, {
+   const { data } = useQuery<{ myRestaurant: MyRestaurantOutput }, { input: MyRestaurantInput }>(MY_RESTAURANT_QUERY, {
       variables: {
          input: {
             id: Number(id),
          },
       },
    });
-   const onCompleted = (data: createPayment) => {
+   const onCompleted = (data: { createPayment: CreatePaymentOutput }) => {
       if (data.createPayment.ok) {
          alert("Your restaurant is being promoted!");
       }
    };
-   const [createPaymentMutation, { loading }] = useMutation<createPayment, createPaymentVariables>(CREATE_PAYMENT_MUTATION, {
+   const [createPaymentMutation, { loading: _loading }] = useMutation<
+      { createPayment: CreatePaymentOutput },
+      { input: CreatePaymentInput }
+   >(CREATE_PAYMENT_MUTATION, {
       onCompleted,
    });
    const { data: userData } = useMe();
@@ -144,7 +139,7 @@ export const MyRestaurant = () => {
       }
    };
 
-   const { data: subscriptionData } = useSubscription<pendingOrders>(PENDING_ORDERS_SUBSCRIPTION);
+   const { data: subscriptionData } = useSubscription<PendingOrdersSubscription>(PENDING_ORDERS_SUBSCRIPTION);
    const history = useHistory();
    useEffect(() => {
       if (subscriptionData?.pendingOrders.id) {

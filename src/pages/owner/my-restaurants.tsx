@@ -7,7 +7,7 @@ import tw from "twin.macro";
 import { Link as RouterLink } from "react-router-dom";
 import { RestaurantWrapper } from "../restaurant/restaurants";
 import Restaurant from "../../components/restaurant";
-import { myRestaurants } from "../../__generated__/myRestaurants";
+import { MyRestaurantsOutput } from "../../generated/graphql";
 
 const Container = styled.div``;
 
@@ -41,7 +41,7 @@ export const MY_RESTAURANTS_QUERY = gql`
 `;
 
 export const MyRestaurants = () => {
-   const { data } = useQuery<myRestaurants>(MY_RESTAURANTS_QUERY);
+   const { data } = useQuery<{ myRestaurants: MyRestaurantsOutput }>(MY_RESTAURANTS_QUERY);
 
    return (
       <Container>
